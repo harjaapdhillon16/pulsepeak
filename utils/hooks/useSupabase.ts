@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -17,7 +17,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const fetchUserData = useCallback(async () => {
     setLoading(true);
-    const user_id = await user.auth.getUser()
+    const user_id = await user.auth.getUser();
     setUserData(user_id.data.user);
     if (user_id.data.user?.email) {
       const {
@@ -35,11 +35,18 @@ export const useAuth = () => {
 
   useEffect(() => {
     fetchUserData?.();
+    user.auth.onAuthStateChange((event, session: any) => {
+      if (session?.user) {
+        localStorage.setItem("email", session?.user?.email as any);
+      } else {
+        localStorage.removeItem("email");
+      }
+    });
   }, []);
 
   return {
     supabaseUser,
-    email: userData?.email,
+    email: userData?.email ?? localStorage.getItem("email"),
     userData,
     fetchUserData,
     loading,
