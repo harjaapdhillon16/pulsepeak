@@ -36,10 +36,12 @@ export const useAuth = () => {
   useEffect(() => {
     fetchUserData?.();
     user.auth.onAuthStateChange((event, session: any) => {
-      if (session?.user) {
-        localStorage.setItem("email", session?.user?.email as any);
-      } else {
-        localStorage.removeItem("email");
+      if (global?.window?.localStorage) {
+        if (session?.user) {
+          localStorage.setItem("email", session?.user?.email as any);
+        } else {
+          localStorage.removeItem("email");
+        }
       }
     });
   }, []);
