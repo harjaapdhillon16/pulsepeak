@@ -51,7 +51,7 @@ export const useAuth = () => {
 
   return {
     supabaseUser,
-    email: userData?.email ?? localStorage.getItem("email"),
+    email: userData?.email ?? global?.window?.localStorage?.getItem?.("email"),
     userData,
     fetchUserData,
     loading,
