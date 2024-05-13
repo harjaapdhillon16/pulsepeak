@@ -38,9 +38,12 @@ export const useAuth = () => {
     user.auth.onAuthStateChange((event, session: any) => {
       if (global?.window?.localStorage) {
         if (session?.user) {
-          localStorage.setItem("email", session?.user?.email as any);
+          global?.window?.localStorage.setItem(
+            "email",
+            session?.user?.email as any
+          );
         } else {
-          localStorage.removeItem("email");
+          global?.window?.localStorage.removeItem("email");
         }
       }
     });
