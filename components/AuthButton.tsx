@@ -11,7 +11,7 @@ export default function AuthButton() {
     await supabase.auth.signOut();
     return redirect("/login");
   };
-  console.log({supabaseUser})
+
   return email ? (
     <div className="flex items-center gap-4">
       <form action={signOut}>

@@ -16,7 +16,7 @@ export default function Login() {
     <>
       <img
         className="w-screen h-screen object-cover"
-        src="https://images.unsplash.com/photo-1658487476833-f094aaf4a66c"
+        src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
       />
       <div className="flex-1 w-screen absolute top-0 left-0 h-screen bg-black bg-opacity-70  flex flex-col px-8 justify-center gap-2">
         <Link
@@ -41,7 +41,7 @@ export default function Login() {
         </Link>
 
         <div className="w-[fit-content] text-center mx-auto">
-          <p className="font-medium text-xl mb-2">
+          <p className="font-medium text-3xl mb-2">
             Welcome to the world of extreme fitness !
           </p>
           <button

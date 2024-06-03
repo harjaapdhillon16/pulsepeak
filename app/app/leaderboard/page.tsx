@@ -3,7 +3,6 @@ import AuthButton from "@/components/AuthButton";
 import React, { useState } from "react";
 import WorkoutPlanForm from "@/components/WorkoutPlanForm";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { Oval } from "react-loader-spinner";
 
 const Reminder = () => {
   const [loading, setLoading] = useState(false);

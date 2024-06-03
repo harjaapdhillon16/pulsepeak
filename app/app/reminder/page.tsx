@@ -4,10 +4,14 @@ import React, { useState } from "react";
 import WorkoutPlanForm from "@/components/WorkoutPlanForm";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Oval } from "react-loader-spinner";
+import { Button } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
+import { WorkoutReminder } from "@/components/WorkoutReminder";
 
 const Reminder = () => {
   const [loading, setLoading] = useState(false);
   const supabase = useSupabaseClient();
+  const { push } = useRouter();
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
@@ -30,11 +34,20 @@ const Reminder = () => {
         </div>
       </nav>
       <div className="p-3 max-w-[1024px] w-full mx-auto">
-        <p className="text-2xl font-medium">
+        <Button
+          onClick={() => {
+            push("/");
+          }}
+          variant="flat"
+          color="primary"
+        >
+          Back
+        </Button>
+        <p className="text-2xl mt-3 font-medium">
           Fill in your workouts and we will keep reminding you to be on top of
           your goals ⚡ 🔌
         </p>
-        <p></p>
+        <WorkoutReminder />
       </div>
     </>
   );
