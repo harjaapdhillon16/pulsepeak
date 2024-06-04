@@ -1,6 +1,6 @@
 import { useAuth } from "@/utils/hooks/useSupabase";
 import React from "react";
-import Link from 'next/link'
+import Link from "next/link";
 
 export const UserMenu = () => {
   const { supabaseUser } = useAuth();
@@ -30,7 +30,7 @@ export const UserMenu = () => {
           </div>
         </Link>
         <Link href="/app/workout" className="relative w-full text-left">
-          <div className="relative opacity-65 w-full h-64 rounded-lg overflow-hidden shadow-lg">
+          <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
             <div
               className="absolute w-full h-full bg-cover bg-center"
               style={{
@@ -47,9 +47,6 @@ export const UserMenu = () => {
               </p>
             </div>
           </div>
-          <button className="top-3 absolute left-3 bg-green-600 rounded-full px-5 text-xs py-1">
-            Coming Soon
-          </button>
         </Link>
         <Link href="/app/diet" className="relative w-full text-left">
           <div className=" opacity-65 w-full h-64 rounded-lg overflow-hidden shadow-lg">
@@ -84,10 +81,10 @@ export const UserMenu = () => {
             ></div>
             <div className="absolute w-full h-full bg-black opacity-50"></div>
             <div className="relative top-36 bottom-3 p-4 text-white">
-              <h2 className="text-2xl font-semibold mb-1">Fitness Leaderboard</h2>
-              <p className="text-base">
-                See where you stand among your peers
-              </p>
+              <h2 className="text-2xl font-semibold mb-1">
+                Fitness Leaderboard
+              </h2>
+              <p className="text-base">See where you stand among your peers</p>
             </div>
           </div>
           <button className="top-3 absolute left-3 bg-green-600 rounded-full px-5 text-xs py-1">

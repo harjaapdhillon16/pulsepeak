@@ -4,7 +4,7 @@ import { BotIcon, LucideHome, LucideNewspaper} from "lucide-react";
 
 export function BottomTab() {
   return (
-    <div className="w-full px-10 bottom-2 fixed">
+    <div className="w-full bottom-0 fixed">
       <Tabs aria-label="Options" color="primary" className="w-full !block bg-black" variant="bordered">
         <Tab
           key="photos"

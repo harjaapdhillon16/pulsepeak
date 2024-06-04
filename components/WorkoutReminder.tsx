@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import { Button, Card, CardBody, Input } from "@nextui-org/react";
 import dayjs from "dayjs";
+import { CircleXIcon } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const daysOfWeek = [
   "Monday",
@@ -14,7 +17,8 @@ const daysOfWeek = [
 ];
 
 export const WorkoutReminder = () => {
-  const [times, setTimes] = useState<any>(Array(7).fill(undefined));
+  const [times, setTimes] = useState<any>(Array(7).fill(""));
+  const { push } = useRouter();
 
   function convertTo12HourFormat(time: string) {
     // Split the time string into hours and minutes
@@ -37,23 +41,61 @@ export const WorkoutReminder = () => {
   };
 
   return (
-    <>
+    <div className="w-full">
       <p>Leave the days that you don't workout :)</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 py-4 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 py-4 md:grid-cols-3 gap-3 min-w-[95vw]">
         {daysOfWeek.map((day, index) => (
           <div key={index} className="p-0">
-            <Card>
-              <CardBody>
+            <Card className="relative">
+              <CardBody className="pb-10">
                 <p className="text-2xl">{day}</p>
                 <div className="p-2">
-                  <input
-                    aria-label="Time"
-                    value={times[index]}
-                    onChange={(e) => {
-                      handleTimeChange(index, e);
-                    }}
-                    type="time"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <input
+                      aria-label="Time"
+                      value={times[index]}
+                      onChange={(e) => {
+                        handleTimeChange(index, e);
+                      }}
+                      className="w-[200px]"
+                      type="time"
+                    />
+                    {Boolean(times[index]) && (
+                      <Button
+                        onClick={() => {
+                          setTimes((d: Array<string>) => {
+                            return d.map((item: string, idx: number) =>
+                              idx === index ? "" : item
+                            );
+                          });
+                        }}
+                        variant="light"
+                        size="sm"
+                        color="danger"
+                      >
+                        <CircleXIcon />
+                      </Button>
+                    )}
+                  </div>
+                  {Boolean(times[index]) && (
+                    <Button
+                      className="absolute bottom-2 right-2"
+                      variant="flat"
+                      onClick={() => {
+                        setTimes([
+                          times[index],
+                          times[index],
+                          times[index],
+                          times[index],
+                          times[index],
+                          undefined,
+                          undefined,
+                        ]);
+                      }}
+                    >
+                      Set same time for mon - fri
+                    </Button>
+                  )}
                   <br />
                   <p className="mt-2 text-sm">
                     {Boolean(times[index]) &&
@@ -65,9 +107,24 @@ export const WorkoutReminder = () => {
           </div>
         ))}
       </div>
-      <Button className="mt-2 w-full font-medium" size="lg" color="primary">
+      <Button
+        onClick={() => {
+          toast.success(
+            "Awesome we have saved your workout routine , you will be reminded every single day an hour before your workout on whatsapp !",
+            {
+              duration: 6000,
+            }
+          );
+          setTimeout(() => {
+            push("/");
+          }, 6000);
+        }}
+        className="mt-2 w-full font-medium"
+        size="lg"
+        color="primary"
+      >
         Submit
       </Button>
-    </>
+    </div>
   );
 };

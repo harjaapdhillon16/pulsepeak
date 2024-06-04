@@ -25,7 +25,7 @@ const Reminder = () => {
   return (
     <>
       <nav className="w-full flex justify-center border-b border-b-foreground/10 h-24">
-        <div className="w-full max-w-[1024px] flex justify-between items-center p-3 text-sm">
+        <div className="w-full flex justify-between items-center p-3 text-sm">
           <img
             className="h-16 w-16"
             src="https://vswwfumiihhlpfevsxcr.supabase.co/storage/v1/object/public/assets/t-logo.png"
@@ -33,7 +33,7 @@ const Reminder = () => {
           <AuthButton />
         </div>
       </nav>
-      <div className="p-3 max-w-[1024px] w-full mx-auto">
+      <div className="p-3 w-full">
         <Button
           onClick={() => {
             push("/");
