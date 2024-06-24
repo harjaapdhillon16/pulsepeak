@@ -12,7 +12,7 @@ export default function RootLayout({ children, pageProps }: any) {
   return (
     <html lang="en">
       <body className="bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center">
+        <main className="min-h-screen flex flex-col items-center overflow-hidden">
           <SessionContextProvider
             supabaseClient={client}
             initialSession={pageProps?.session}

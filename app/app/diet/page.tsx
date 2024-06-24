@@ -29,12 +29,11 @@ const Reminder = () => {
           <AuthButton />
         </div>
       </nav>
-      <div className="p-3 max-w-[1024px] w-full mx-auto">
-        <p className="text-2xl font-medium">
-          Fill in your workouts and we will keep reminding you to be on top of
-          your goals ⚡ 🔌
-        </p>
-        <p></p>
+      <div className="p-3 w-screen mx-auto">
+        <div className="max-w-[1024px] mx-auto">
+          <p className="text-2xl font-medium">Diet Planning</p>
+          <p></p>
+        </div>
       </div>
     </>
   );

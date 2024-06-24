@@ -49,7 +49,7 @@ export const UserMenu = () => {
           </div>
         </Link>
         <Link href="/app/diet" className="relative w-full text-left">
-          <div className=" opacity-65 w-full h-64 rounded-lg overflow-hidden shadow-lg">
+          <div className="w-full h-64 rounded-lg overflow-hidden shadow-lg">
             <div
               className="absolute w-full h-full bg-cover bg-center"
               style={{
@@ -66,9 +66,6 @@ export const UserMenu = () => {
               </p>
             </div>
           </div>
-          <button className="top-3 absolute left-3 bg-green-600 rounded-full px-5 text-xs py-1">
-            Coming Soon
-          </button>
         </Link>
         <Link href="/app/leaderboard" className="relative w-full text-left">
           <div className=" opacity-65 w-full h-64 rounded-lg overflow-hidden shadow-lg">
@@ -95,3 +92,6 @@ export const UserMenu = () => {
     </div>
   );
 };
+
+
+

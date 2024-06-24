@@ -1,10 +1,11 @@
 "use client";
-import AuthButton from "../components/AuthButton";
+import AuthButton from "../../components/AuthButton";
 import Hero from "@/components/Hero";
 import { AuthUserUI } from "@/components/AuthUserUI";
 import { useAuth } from "@/utils/hooks/useSupabase";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { BottomTab } from "@/components/bottomTabs";
+import { AIPrompt } from "@/components/prompt";
 
 export default function Index() {
   const { ...rest } = useAuth();
@@ -20,14 +21,8 @@ export default function Index() {
           <AuthButton />
         </div>
       </nav>
-      {Boolean(rest.email) ? (
-        <div className="pb-20 max-w-[1024px]">{<AuthUserUI />}</div>
-      ) : (
-        <div className="animate-in max-w-[1024px] flex-1 flex flex-col gap-20 opacity-0 px-3">
-          <Hero />
-        </div>
-      )}
-      {Boolean(rest.email) && <BottomTab />}
+      <AIPrompt />
+      <BottomTab />
     </div>
   );
 }

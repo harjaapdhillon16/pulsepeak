@@ -43,7 +43,7 @@ export const WorkoutReminder = () => {
   return (
     <div className="w-full">
       <p>Leave the days that you don't workout :)</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 py-4 md:grid-cols-3 gap-3 min-w-[95vw]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 py-4 md:grid-cols-3 gap-3">
         {daysOfWeek.map((day, index) => (
           <div key={index} className="p-0">
             <Card className="relative">
