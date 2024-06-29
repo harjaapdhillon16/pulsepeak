@@ -9,6 +9,7 @@ export default function AuthButton() {
   const supabase = useSupabaseClient();
   const signOut = async () => {
     await supabase.auth.signOut();
+    localStorage.clear();
     return redirect("/login");
   };
 

@@ -7,8 +7,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { BottomTab } from "@/components/bottomTabs";
 
 export default function Index() {
-  const { ...rest } = useAuth();
-  console.log(rest);
+  const { email } = useAuth();
   return (
     <div className="flex-1 w-screen flex flex-col gap-5 items-center">
       <nav className="w-full flex justify-center border-b border-b-foreground/10 h-24">
@@ -20,14 +19,14 @@ export default function Index() {
           <AuthButton />
         </div>
       </nav>
-      {Boolean(rest.email) ? (
+      {Boolean(email) ? (
         <div className="pb-20 max-w-[1024px]">{<AuthUserUI />}</div>
       ) : (
         <div className="animate-in max-w-[1024px] flex-1 flex flex-col gap-20 opacity-0 px-3">
           <Hero />
         </div>
       )}
-      {Boolean(rest.email) && <BottomTab />}
+      {Boolean(email) && <BottomTab />}
     </div>
   );
 }

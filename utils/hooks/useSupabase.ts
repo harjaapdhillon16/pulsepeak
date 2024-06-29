@@ -1,7 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 type hookProps =
@@ -11,10 +10,13 @@ type hookProps =
   | undefined;
 
 export const useAuth = () => {
-  const [supabaseUser, setSupabaseUser] = useState<any>(null);
+  const [supabaseUser, setSupabaseUser] = useState<any>(
+    () => JSON.parse(global?.window?.localStorage?.getItem("supabaseUser") || "null")
+  );
   const user = useSupabaseClient();
   const [userData, setUserData] = useState<any>("");
   const [loading, setLoading] = useState(true);
+
   const fetchUserData = useCallback(async () => {
     setLoading(true);
     const user_id = await user.auth.getUser();
@@ -29,9 +31,10 @@ export const useAuth = () => {
         },
       });
       setSupabaseUser(dbData?.[0]);
+      global?.window?.localStorage?.setItem("supabaseUser", JSON.stringify(dbData?.[0]));
     }
     setLoading(false);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchUserData?.();
@@ -47,7 +50,7 @@ export const useAuth = () => {
         }
       }
     });
-  }, []);
+  }, [fetchUserData, user.auth]);
 
   return {
     supabaseUser,

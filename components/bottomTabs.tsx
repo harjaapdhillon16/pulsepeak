@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tabs, Tab, Chip } from "@nextui-org/react";
 import { BotIcon, LucideHome, LucideNewspaper } from "lucide-react";
 
 export function BottomTab() {
@@ -69,6 +69,7 @@ export function BottomTab() {
             <div className="flex items-center space-x-2">
               <LucideNewspaper />
               <span>Timeline</span>
+              <Chip size="sm" color="danger">Coming Soon</Chip>
             </div>
           }
         />

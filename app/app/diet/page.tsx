@@ -1,9 +1,10 @@
 "use client";
 import AuthButton from "@/components/AuthButton";
 import React, { useState } from "react";
-import WorkoutPlanForm from "@/components/WorkoutPlanForm";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Oval } from "react-loader-spinner";
+import { DietForm } from "@/components/DietForm";
+import { Button, CardFooter, Card, Image } from "@nextui-org/react";
 
 const Reminder = () => {
   const [loading, setLoading] = useState(false);
@@ -29,10 +30,43 @@ const Reminder = () => {
           <AuthButton />
         </div>
       </nav>
+
       <div className="p-3 w-screen mx-auto">
         <div className="max-w-[1024px] mx-auto">
-          <p className="text-2xl font-medium">Diet Planning</p>
-          <p></p>
+          <div className="md:flex md:space-x-3 space-y-5 md:space-y-0 items-center">
+            <div className="w-[400px]">
+              <Card isFooterBlurred radius="lg" className="border-none">
+                <Image
+                  alt="Woman listing to music"
+                  className="object-cover"
+                  height={300}
+                  src="https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEzfHx8ZW58MHx8fHx8"
+                  width={400}
+                />
+                <CardFooter className="justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                  <p className="text-sm text-white text-center font-bold">
+                    Create your own diet and set reminders
+                  </p>
+                </CardFooter>
+              </Card>
+            </div>
+            <div className="w-[400px]">
+              <Card isFooterBlurred radius="lg" className="border-none">
+                <Image
+                  alt="Woman listing to music"
+                  className="object-cover"
+                  height={300}
+                  src="https://images.unsplash.com/photo-1587015566802-5dc157c901cf?q=80&w=2786&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  width={400}
+                />
+                <CardFooter className="justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                  <p className="text-sm text-white text-center font-bold">
+                    Use AI to generate your own diet
+                  </p>
+                </CardFooter>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     </>

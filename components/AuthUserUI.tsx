@@ -6,7 +6,7 @@ import { UserMenu } from "./UserMenu";
 
 export const AuthUserUI = () => {
   const { supabaseUser, fetchUserData, loading } = useAuth();
-  if (loading) {
+  if (loading && !supabaseUser?.full_name) {
     return (
       <div className="h-[50vh]">
         <div role="status" className="animate-pulse pb-3 w-[300px] text-center">

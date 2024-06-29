@@ -154,7 +154,7 @@ function generateWorkoutPlan(days: any, name: string) {
               <th>Reps</th>
               <th>Sets</th>
               <th>Notes</th>
-              <th>Link</th>
+              <th>Video Link</th>
             </tr>
           </thead>
           <tbody>`;

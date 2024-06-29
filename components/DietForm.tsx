@@ -1,13 +1,20 @@
 // components/DietForm.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
 import {
   Input,
   Spacer,
+  RadioGroup,
+  CheckboxGroup,
+  Checkbox,
+  Textarea,
   Button,
   Radio,
-  Select,
+  Slider,
+  Spinner,
 } from "@nextui-org/react";
+import { useAuth } from "@/utils/hooks/useSupabase";
 
 type FormData = {
   weight: number;
@@ -19,126 +26,240 @@ type FormData = {
   bmi: number;
   activityLevel: string;
   dietaryPreference: string;
+  dietType: string;
+  cuisinePreference: string[];
   allergies: string;
   medicalConditions: string;
+  isMultvitamins: boolean;
 };
 
-const DietForm: React.FC = () => {
+export const DietForm: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = useForm<FormData>();
-  const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+
+  const { supabaseUser } = useAuth();
+
+  console.log({ ...watch(), ...supabaseUser });
+
+  const [cuisne, setCuisine] = React.useState([]);
+
+  useEffect(() => {
+    register("dietType", {
+      required: true,
+    });
+    register("weightGoal", { required: true });
+    register("muscleGoal", { required: true });
+    register("cuisinePreference", { required: true });
+  }, [register]);
+
+  const [activityLevel, setActivityLevel] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState([]);
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setLoading(true);
+    try {
+      const response = await axios.post("/api/app/create_diet", {
+        ...data,
+        ...supabaseUser,
+        activityLevel,
+      });
+      setResults(response.data.data);
+    } catch (error) {
+      console.error("Error submitting form data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-3">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (results.length !== 0) {
+    return (
+      <div className="pt-4">
+        <h4 className="text-2xl font-bold">Your Diet</h4>
+        <div className="space-y-4 divide-y-1">
+          {results.map((item: any) => (
+            <div className="pt-2">
+              <p className="text-lg font-medium">
+                {item.dietName} - {item.timeToTake}
+              </p>
+              <p>Meal - {item.mealDetails}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-between">
+          <Button className="mt-4" radius="sm" size="lg" color="primary">
+            Remind Me of my Diet
+          </Button>
+          <Button className="mt-4" radius="sm" size="lg" color="danger">
+            Download PDF
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Text h2>Diet Planner Form</Text>
-        <Input
-          label="Weight (kg)"
-          type="number"
-          {...register("weight", { required: true })}
-          fullWidth
-        />
-        {errors.weight && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Height (cm)"
-          type="number"
-          {...register("height", { required: true })}
-          fullWidth
-        />
-        {errors.height && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Age"
-          type="number"
-          {...register("age", { required: true })}
-          fullWidth
-        />
-        {errors.age && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Text>Gender</Text>
-        <Radio.Group
-          orientation="horizontal"
-          {...register("gender", { required: true })}
-        >
-          <Radio value="male">Male</Radio>
-          <Radio value="female">Female</Radio>
-          <Radio value="other">Other</Radio>
-        </Radio.Group>
-        {errors.gender && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Muscle Goal"
-          type="text"
-          {...register("muscleGoal", { required: true })}
-          fullWidth
-        />
-        {errors.muscleGoal && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Weight Goal"
-          type="text"
-          {...register("weightGoal", { required: true })}
-          fullWidth
-        />
-        {errors.weightGoal && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="BMI"
-          type="number"
-          {...register("bmi", { required: true })}
-          fullWidth
-        />
-        {errors.bmi && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Select
-          label="Activity Level"
-          {...register("activityLevel", { required: true })}
-          fullWidth
-        >
-          <Select.Option value="sedentary">Sedentary</Select.Option>
-          <Select.Option value="lightly_active">Lightly active</Select.Option>
-          <Select.Option value="moderately_active">
-            Moderately active
-          </Select.Option>
-          <Select.Option value="very_active">Very active</Select.Option>
-          <Select.Option value="super_active">Super active</Select.Option>
-        </Select>
-        {errors.activityLevel && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Dietary Preference"
-          type="text"
-          {...register("dietaryPreference", { required: true })}
-          fullWidth
-        />
-        {errors.dietaryPreference && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Allergies"
-          type="text"
-          {...register("allergies", { required: true })}
-          fullWidth
-        />
-        {errors.allergies && <span>This field is required</span>}
-        <Spacer y={1} />
-        <Input
-          label="Medical Conditions"
-          type="text"
-          {...register("medicalConditions", { required: true })}
-          fullWidth
-        />
-        {errors.medicalConditions && <span>This field is required</span>}
-        <Spacer y={2} />
-        <Button type="submit" auto>
+    <div className="pt-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <h4 className="text-xl font-semibold mb-2">Goals</h4>
+          <RadioGroup
+            label="Muscle Goal"
+            value={watch("muscleGoal")}
+            onValueChange={(e) => {
+              setValue("muscleGoal", e);
+            }}
+          >
+            <Radio value="Maintain">Maintain</Radio>
+            <Radio value="Increase">Increase</Radio>
+            <Radio value="Decrease">Decrease</Radio>
+          </RadioGroup>
+          {errors.muscleGoal && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <RadioGroup
+            label="Weight Goal"
+            value={watch("weightGoal")}
+            onValueChange={(e) => {
+              setValue("weightGoal", e);
+            }}
+          >
+            <Radio value="Maintain">Maintain</Radio>
+            <Radio value="Lose">Lose</Radio>
+            <Radio value="Gain">Gain</Radio>
+          </RadioGroup>
+          {errors.weightGoal && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <h4 className="text-xl font-semibold mb-2">Activity Level</h4>
+          <label>Rate your activity level (out of 10)</label>
+          <Slider
+            minValue={1}
+            maxValue={10}
+            step={1}
+            value={activityLevel}
+            onChange={(value: any) => setActivityLevel(value)}
+          />
+          <p className="text-gray-200 text-lg">
+            Activity Level - {activityLevel}
+          </p>
+        </div>
+
+        <div>
+          <h4 className="text-xl font-semibold mb-2">Preferences</h4>
+          <p className="pb-2">Dietary Preferences</p>
+          <Textarea
+            placeholder="List your dietary preferences"
+            fullWidth
+            {...register("dietaryPreference", { required: true })}
+          />
+          {errors.dietaryPreference && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <RadioGroup
+            label="Diet Type"
+            value={watch("dietType")}
+            onValueChange={(e) => {
+              setValue("dietType", e);
+            }}
+          >
+            <Radio value="Vegan">Vegan</Radio>
+            <Radio value="Vegetarian">Vegetarian</Radio>
+            <Radio value="Eggetarian">Eggetarian</Radio>
+            <Radio value="Non-Vegetarian">Non-Vegetarian</Radio>
+          </RadioGroup>
+          {errors.dietType && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <h4 className="text-xl font-semibold mb-2">Cuisine Preferences</h4>
+          <CheckboxGroup
+            label="Select your preferred cuisines"
+            value={cuisne}
+            onValueChange={(e) => {
+              setCuisine(e as any);
+              setValue("cuisinePreference", e);
+            }}
+          >
+            <Checkbox value="Indian">Indian</Checkbox>
+            <Checkbox value="Italian">Italian</Checkbox>
+            <Checkbox value="Mexican">Mexican</Checkbox>
+            <Checkbox value="Chinese">Chinese</Checkbox>
+            <Checkbox value="Japanese">Japanese</Checkbox>
+          </CheckboxGroup>
+          {errors.cuisinePreference && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <h4 className="text-xl font-semibold">Multi-vitamines</h4>
+          <Checkbox
+            isSelected={watch("isMultvitamins")}
+            onValueChange={(e) => {
+              setValue("isMultvitamins", e);
+            }}
+          >
+            Add Multivitamins for a better results
+          </Checkbox>
+          {errors.allergies && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <label>Allergies</label>
+          <Textarea
+            placeholder="List any allergies"
+            fullWidth
+            {...register("allergies", { required: true })}
+          />
+          {errors.allergies && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <div>
+          <h4 className="text-xl font-semibold mb-2">Medical Conditions</h4>
+          <Textarea
+            placeholder="Please list any medical conditions or injuries"
+            fullWidth
+            {...register("medicalConditions", { required: true })}
+          />
+          {errors.medicalConditions && (
+            <p className="text-red-500">This field is required</p>
+          )}
+        </div>
+
+        <Button color="primary" type="submit" disabled={loading}>
           Submit
         </Button>
       </form>
-    </Container>
+    </div>
   );
 };
 
