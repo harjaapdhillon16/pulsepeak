@@ -1,7 +1,6 @@
 "use client";
 import AuthButton from "@/components/AuthButton";
 import React, { useState } from "react";
-import WorkoutPlanForm from "@/components/WorkoutPlanForm";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 const Reminder = () => {
