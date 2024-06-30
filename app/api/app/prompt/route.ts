@@ -1,12 +1,12 @@
 // pages/api/prompt.js
-import { Configuration, OpenAIApi } from "openai";
-import { NextResponse } from "next/server";
+// @ts-nocheck
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: "sk-proj-vSErwoAEqgiQXGsANeJST3BlbkFJHJ7H1E2Aubce0HVuX7cn",
 });
 
-const openai = new OpenAIApi(configuration);
 
 export const POST = async (req: any) => {
   if (req.method === "POST") {
@@ -16,7 +16,7 @@ export const POST = async (req: any) => {
       // Construct the conversation history including the new prompt
       const messages = [...history, { role: "user", content: prompt }];
 
-      const response: any = await openai.createChatCompletion({
+      const response: any = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: "Act as a fitness expert" },
@@ -24,7 +24,7 @@ export const POST = async (req: any) => {
         ],
       });
 
-      const aiResponse = response.data.choices[0].message.content;
+      const aiResponse = response.choices[0].message.content;
 
       // Store Chain of Thought (COT)
       const COT = [...messages, { role: "assistant", content: aiResponse }];

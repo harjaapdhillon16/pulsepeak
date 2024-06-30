@@ -1,15 +1,14 @@
 // @ts-nocheck
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
-const { Configuration, OpenAIApi } = require("openai");
+import OpenAI from 'openai';
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: "sk-proj-vSErwoAEqgiQXGsANeJST3BlbkFJHJ7H1E2Aubce0HVuX7cn",
 });
 
-const openai = new OpenAIApi(configuration);
 
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+
+export const POST = async (req) => {
   const userdata = await req.json()
 
   function parseWorkoutString(inputString) {
@@ -18,7 +17,7 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const generateWorkoutPlan = async () => {
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
@@ -32,7 +31,7 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       ],
     });
 
-    const workoutPlan = response.data.choices[0].message.content.trim();
+    const workoutPlan = response.choices[0].message.content.trim();
     console.log(workoutPlan);
     return parseWorkoutString(workoutPlan);
   };
