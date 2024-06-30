@@ -33,7 +33,8 @@ const Reminder = () => {
 
       <div className="p-3 w-screen mx-auto">
         <div className="max-w-[1024px] mx-auto">
-          <div className="md:flex md:space-x-3 space-y-5 md:space-y-0 items-center">
+          <DietForm />
+          {/* <div className="md:flex md:space-x-3 space-y-5 md:space-y-0 items-center">
             <div className="w-[400px]">
               <Card isFooterBlurred radius="lg" className="border-none">
                 <Image
@@ -66,7 +67,7 @@ const Reminder = () => {
                 </CardFooter>
               </Card>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
