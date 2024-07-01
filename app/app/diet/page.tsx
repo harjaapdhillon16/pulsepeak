@@ -3,8 +3,16 @@ import AuthButton from "@/components/AuthButton";
 import React, { useState } from "react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Oval } from "react-loader-spinner";
-import { DietForm } from "@/components/DietForm";
 import { Button, CardFooter, Card, Image } from "@nextui-org/react";
+
+import dynamic from "next/dynamic";
+
+const DynamicComponentWithNoSSR = dynamic(
+  () => import("../../../components/DietForm"),
+  {
+    ssr: false,
+  }
+);
 
 const Reminder = () => {
   const [loading, setLoading] = useState(false);
@@ -33,7 +41,7 @@ const Reminder = () => {
 
       <div className="p-3 w-screen mx-auto">
         <div className="max-w-[1024px] mx-auto">
-          <DietForm />
+          <DynamicComponentWithNoSSR />
           {/* <div className="md:flex md:space-x-3 space-y-5 md:space-y-0 items-center">
             <div className="w-[400px]">
               <Card isFooterBlurred radius="lg" className="border-none">
