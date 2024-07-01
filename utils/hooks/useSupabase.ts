@@ -10,8 +10,11 @@ type hookProps =
   | undefined;
 
 export const useAuth = () => {
-  const [supabaseUser, setSupabaseUser] = useState<any>(
-    () => JSON.parse(global?.window?.localStorage?.getItem("supabaseUser") || "null")
+  const [supabaseUser, setSupabaseUser] = useState<any>(() =>
+    global?.window?.localStorage?.getItem("supabaseUser") &&
+    global?.window?.localStorage?.getItem("supabaseUser") !== "undefined"
+      ? JSON.parse(global?.window?.localStorage?.getItem("supabaseUser") ?? "")
+      : {}
   );
   const user = useSupabaseClient();
   const [userData, setUserData] = useState<any>("");
@@ -31,7 +34,10 @@ export const useAuth = () => {
         },
       });
       setSupabaseUser(dbData?.[0]);
-      global?.window?.localStorage?.setItem("supabaseUser", JSON.stringify(dbData?.[0]));
+      global?.window?.localStorage?.setItem(
+        "supabaseUser",
+        JSON.stringify(dbData?.[0])
+      );
     }
     setLoading(false);
   }, [user]);

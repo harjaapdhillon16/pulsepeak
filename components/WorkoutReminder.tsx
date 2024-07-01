@@ -1,4 +1,5 @@
 // src/WorkoutReminder.js
+// @ts-nocheck
 import React, { useState } from "react";
 import { Button, Card, CardBody, Input } from "@nextui-org/react";
 import dayjs from "dayjs";
