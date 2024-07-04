@@ -133,7 +133,7 @@ export const DietForm: React.FC = () => {
   }
 
   return (
-    <div className="pt-4">
+    <div className="pt-4 text-white">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
           <h4 className="text-xl font-semibold mb-2">Goals</h4>
@@ -144,9 +144,9 @@ export const DietForm: React.FC = () => {
               setValue("muscleGoal", e);
             }}
           >
-            <Radio value="Maintain">Maintain</Radio>
-            <Radio value="Increase">Increase</Radio>
-            <Radio value="Decrease">Decrease</Radio>
+            <Radio className="text-white" value="Maintain">Maintain</Radio>
+            <Radio className="text-white" value="Increase">Increase</Radio>
+            <Radio className="text-white" value="Decrease">Decrease</Radio>
           </RadioGroup>
           {errors.muscleGoal && (
             <p className="text-red-500">This field is required</p>

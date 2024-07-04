@@ -256,7 +256,7 @@ const WorkoutPlanning = () => {
 
   return (
     <div className="w-screen">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-24">
+      <nav className="w-full flex justify-center h-24">
         <div className="w-full max-w-[1024px] flex justify-between items-center p-3 text-sm">
           <img
             className="h-16 w-16"

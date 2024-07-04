@@ -16,7 +16,7 @@ export default function AuthButton() {
   return email ? (
     <div className="flex items-center gap-4">
       <form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
+        <button className="py-2 px-4 bg-blue-600 rounded-md no-underline">
           Logout
         </button>
       </form>

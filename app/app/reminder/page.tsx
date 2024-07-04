@@ -23,7 +23,7 @@ const Reminder = () => {
   };
   return (
     <div className="w-screen">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-24">
+      <nav className="w-full flex justify-center h-24">
         <div className="w-full flex justify-between items-center p-3 text-sm  max-w-5xl" >
           <img
             className="h-16 w-16"

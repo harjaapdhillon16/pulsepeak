@@ -49,7 +49,7 @@ export default function Login() {
           </p>
           <button
             onClick={loginWithGoogle as any}
-            className="justify-center space-x-2 w-[280px] mx-auto font-medium bg-gray-900 flex items-center rounded-md px-4 py-2 text-foreground mb-2"
+            className="justify-center space-x-2 w-[280px] mx-auto font-medium bg-gray-900 flex items-center rounded-md text-white px-4 py-2 text-foreground mb-2"
           >
             <img
               className="h-4 w-4"

@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useTheme } from "next-themes";
 
 type hookProps =
   | {
@@ -17,8 +18,14 @@ export const useAuth = () => {
       : {}
   );
   const user = useSupabaseClient();
+  const { theme, setTheme } = useTheme();
+
   const [userData, setUserData] = useState<any>("");
   const [loading, setLoading] = useState(true);
+  console.log({ theme });
+  useEffect(() => {
+    setTheme("dark");
+  }, [setTheme]);
 
   const fetchUserData = useCallback(async () => {
     setLoading(true);
