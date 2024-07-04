@@ -13,6 +13,7 @@ const ContactUsPage = () => {
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Contact Information</h2>
         <p><strong>Email:</strong> <a href="mailto:contact@pulsepeak.fitness" className="text-blue-500">contact@pulsepeak.fitness</a></p>
+        <p><strong>Business Name:</strong> Pulsepeak</p>
         <p><strong>Phone:</strong> [+918288807134]</p>
         <p><strong>Address:</strong>SCF 48, Shiwalik Avenue, Sector 125, Kharar Punjab,India</p>
       </div>
