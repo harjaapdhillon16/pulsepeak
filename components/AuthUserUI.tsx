@@ -38,7 +38,7 @@ export const AuthUserUI = () => {
   return (
     <>
       {Boolean(supabaseUser?.full_name) ? (
-        <UserMenu isSubscribed={isSubscribed} />
+        <UserMenu isSubscribed={isSubscribed as any} />
       ) : (
         <MultiStepForm fetchUserData={fetchUserData} />
       )}
