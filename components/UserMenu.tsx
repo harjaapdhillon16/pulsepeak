@@ -57,6 +57,7 @@ export const UserMenu = ({ isSubscribed }: { isSubscribed: boolean }) => {
               Hey there , I can see you're not subscribed to pulsepeak , it's
               only INR 29/ Month to gain access to all the amazing features !
             </p>
+            <p>Note : after payment please wait for 40-60 seconds for the payment to be processed.</p>
           </CardBody>
           <CardFooter className="gap-3">
             {Boolean(linkToSub) && (
