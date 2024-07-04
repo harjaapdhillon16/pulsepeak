@@ -57,7 +57,7 @@ export default function Login() {
             />
             <p>Authenticate with Google</p>
           </button>
-          <button
+          {/* <button
             onClick={async () => {
               const { data, error } = await supabase.auth.signInWithPassword({
                 email: "testuser@pulsepeak.fitness",
@@ -68,7 +68,7 @@ export default function Login() {
             className="justify-center space-x-2 w-[280px] mx-auto font-medium bg-gray-900 flex items-center rounded-md text-white px-4 py-2 text-foreground mb-2"
           >
             <p>Anonymous Login</p>
-          </button>
+          </button> */}
         </div>
       </div>
     </>
