@@ -94,7 +94,7 @@ const TermsOfService = () => {
           <h2 className="text-2xl font-semibold mb-2">Governing Law</h2>
           <p>
             These Terms are governed by and construed in accordance with the
-            laws of [Your Jurisdiction], without regard to its conflict of law
+            laws of India, without regard to its conflict of law
             principles.
           </p>
         </div>
