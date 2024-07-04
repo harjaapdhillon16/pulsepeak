@@ -25,7 +25,7 @@ export const POST = async (req: any) => {
     headers: {
       "Content-Type": "application/json",
       Authorization:
-        "Basic cnpwX3Rlc3RfZjhMTldzbk9HQVVIdlU6b0t5MFdQelFPZjRPcVdvR1FzV3luWHZw",
+        "Basic cnpwX2xpdmVfeTZBNHNOU3lJcVd4YzE6VE9aaTJxUkp0QVY3alc1ZG9yMkpscUZE",
     },
     data: dataToSend,
   };
