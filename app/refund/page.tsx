@@ -31,8 +31,8 @@ const RefundPolicy = () => {
         <p>
           If you have any questions about our Refund Policy, please contact us
           at{" "}
-          <a href="mailto:contact@email.com" className="text-blue-500">
-            contact@email.com
+          <a href="mailto: contact@pulsepeak.fitness" className="text-blue-500">
+          contact@pulsepeak.fitness
           </a>
           .
         </p>
