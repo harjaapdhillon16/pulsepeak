@@ -13,9 +13,6 @@ export const POST = async (req: any) => {
       user_id,
       email,
     },
-    notify_info: {
-      notify_email: email,
-    },
   });
 
   let config = {
