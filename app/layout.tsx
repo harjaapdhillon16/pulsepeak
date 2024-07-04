@@ -11,7 +11,7 @@ export default function RootLayout({ children, pageProps }: any) {
   const client = createBrowserSupabaseClient();
   return (
     <html lang="en">
-      <body className="bg-black text-foreground">
+      <body className="bg-black dark text-foreground">
         <main className="min-h-screen flex flex-col items-center overflow-hidden">
           <SessionContextProvider
             supabaseClient={client}
