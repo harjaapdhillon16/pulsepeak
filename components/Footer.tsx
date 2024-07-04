@@ -22,7 +22,7 @@ export const Footer = () => {
           </li>
           <li>
             <Link
-              href="/shipping-policy"
+              href="/shipping"
               className="hover:underline me-4 md:me-6"
             >
               Shipping Policy
