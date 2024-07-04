@@ -17,7 +17,7 @@ const PricingPage = () => {
         <p>
           If you have any questions about our pricing plans or need a custom
           solution, please contact us at{" "}
-          <a href="mailto:contact@email.com" className="text-blue-500">
+          <a href="mailto:contact@pulsepeak.fitness" className="text-blue-500">
             contact@pulsepeak.fitness
           </a>
           .
