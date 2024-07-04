@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export const POST = async (req: any) => {
   const { user_id, email } = await req.json();
   let dataToSend = JSON.stringify({
-    plan_id: "plan_OULVh022gQ6rK4",
+    plan_id: "plan_OUbCVEGaA370XM",
     total_count: 100,
     quantity: 1,
     customer_notify: 1,
