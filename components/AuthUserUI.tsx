@@ -3,10 +3,13 @@ import React from "react";
 import MultiStepForm from "./MultiStepInput";
 import { useAuth } from "@/utils/hooks/useSupabase";
 import { UserMenu } from "./UserMenu";
+import { useSubscribed } from "@/utils/hooks/useIsSubscribed";
 
 export const AuthUserUI = () => {
   const { supabaseUser, fetchUserData, loading } = useAuth();
-  if (loading && !supabaseUser?.full_name) {
+  const { isSubscribed, loading: subscriptionLoading } = useSubscribed();
+  console.log({subscriptionLoading})
+  if ((loading && !supabaseUser?.full_name) || subscriptionLoading) {
     return (
       <div className="h-[50vh]">
         <div role="status" className="animate-pulse pb-3 w-[300px] text-center">
@@ -25,7 +28,9 @@ export const AuthUserUI = () => {
             <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 me-3"></div>
             <div className="w-24 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
           </div>
-          <span className="text-center translate-y-3 opacity-50">Loading up your fitness journey</span>
+          <span className="text-center translate-y-3 opacity-50">
+            Loading up your fitness journey
+          </span>
         </div>
       </div>
     );
@@ -33,7 +38,7 @@ export const AuthUserUI = () => {
   return (
     <>
       {Boolean(supabaseUser?.full_name) ? (
-        <UserMenu />
+        <UserMenu isSubscribed={isSubscribed} />
       ) : (
         <MultiStepForm fetchUserData={fetchUserData} />
       )}

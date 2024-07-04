@@ -9,7 +9,7 @@ const PricingPage = () => {
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Subscription Plans</h2>
         <div className="flex items-center mb-2">
-          <span className="font-semibold">Basic Plan:</span> INR 49/month
+          <span className="font-semibold">Basic Plan:</span> INR 29/month
         </div>
       </div>
       <div className="mb-6">

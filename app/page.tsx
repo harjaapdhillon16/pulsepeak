@@ -7,6 +7,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { BottomTab } from "@/components/bottomTabs";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
+import { useSubscribed } from "@/utils/hooks/useIsSubscribed";
 
 export default function Index() {
   const { email } = useAuth();

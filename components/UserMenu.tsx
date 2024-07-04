@@ -1,15 +1,76 @@
 import { useAuth } from "@/utils/hooks/useSupabase";
 import React from "react";
 import Link from "next/link";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Avatar,
+  Button,
+} from "@nextui-org/react";
+import axios from "axios";
 
-export const UserMenu = () => {
+export const UserMenu = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const { supabaseUser } = useAuth();
   return (
     <div className="w-full px-4 min-h-[70vh]">
       <p className="text-2xl">Hey {supabaseUser?.full_name}</p>
       <p className="text-sm mb-5">What do you wanna do today !</p>
-      <div className="grid lg:grid-cols-2 gap-4 grid-cols-1">
-        <Link href="/app/reminder" className="w-full text-left">
+      {!isSubscribed && (
+        <Card className="max-w-md">
+          <CardHeader className="justify-between">
+            <div className="flex gap-5">
+              <Avatar
+                isBordered
+                radius="full"
+                size="md"
+                src="https://vswwfumiihhlpfevsxcr.supabase.co/storage/v1/object/public/assets/t-logo.png"
+              />
+              <div className="flex flex-col gap-1 items-start justify-center">
+                <h4 className="text-small font-semibold leading-none text-default-600">
+                  Pulsepeak AI
+                </h4>
+                <h5 className="text-small tracking-tight text-default-400">
+                  @pulsepeak ai
+                </h5>
+              </div>
+            </div>
+          </CardHeader>
+          <CardBody className="px-3 py-0 text-small text-default-400">
+            <p className="text-xl font-medium text-white">
+              Hey there , I can see you're not subscribed to pulsepeak , it's
+              only INR 29/ Month to gain access to all the amazing features !
+            </p>
+          </CardBody>
+          <CardFooter className="gap-3">
+            <Button
+              onClick={async () => {
+                const { data } = await axios.post(
+                  "/api/razorpay/create-subscription-link",
+                  {
+                    user_id: supabaseUser?.id,
+                    email: supabaseUser?.email,
+                  }
+                );
+                window.open(data);
+              }}
+              color="primary"
+            >
+              Subscribe for just INR 29/ Month
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
+      <div
+        className={`grid lg:grid-cols-2 mt-2 gap-4 grid-cols-1 ${
+          isSubscribed ? "" : "opacity-45"
+        }`}
+      >
+        <Link
+          href={!isSubscribed ? "/" : "/app/reminder"}
+          className="w-full text-left"
+        >
           <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
             <div
               className="absolute w-full h-full bg-cover bg-center"
@@ -29,7 +90,10 @@ export const UserMenu = () => {
             </div>
           </div>
         </Link>
-        <Link href="/app/workout" className="relative w-full text-left">
+        <Link
+          href={!isSubscribed ? "/" : "/app/workout"}
+          className="relative w-full text-left"
+        >
           <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
             <div
               className="absolute w-full h-full bg-cover bg-center"
@@ -48,7 +112,10 @@ export const UserMenu = () => {
             </div>
           </div>
         </Link>
-        <Link href="/app/diet" className="relative w-full text-left">
+        <Link
+          href={!isSubscribed ? "/" : "/app/diet"}
+          className="relative w-full text-left"
+        >
           <div className="w-full h-64 rounded-lg overflow-hidden shadow-lg">
             <div
               className="absolute w-full h-full bg-cover bg-center"
@@ -67,7 +134,10 @@ export const UserMenu = () => {
             </div>
           </div>
         </Link>
-        <Link href="/app/leaderboard" className="relative w-full text-left">
+        <Link
+          href={!isSubscribed ? "/" : "/app/leaderboard"}
+          className="relative w-full text-left"
+        >
           <div className=" opacity-65 w-full h-64 rounded-lg overflow-hidden shadow-lg">
             <div
               className="absolute w-full h-full bg-cover bg-center"
@@ -92,6 +162,3 @@ export const UserMenu = () => {
     </div>
   );
 };
-
-
-
