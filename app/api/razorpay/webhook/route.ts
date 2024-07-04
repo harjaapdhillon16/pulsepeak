@@ -1,12 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-import NextCors from "nextjs-cors";
 
 import { NextResponse } from "next/server";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils";
-import { corsMiddleware } from "../../utils/middleware";
 
 export const POST = async (req: any) => {
-  await corsMiddleware(req);
   const data = await req.json();
   const webhookSignature: any = req.headers.get("X-Razorpay-Signature");
   console.log(data);
