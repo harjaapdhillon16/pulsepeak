@@ -6,6 +6,11 @@ import dayjs from "dayjs";
 import { CircleXIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useAuth } from "@/utils/hooks/useSupabase";
+import axios from "axios";
+import { parse, format, addMinutes } from "date-fns";
+import { DateTime } from "luxon";
 
 const daysOfWeek = [
   "Monday",
@@ -20,6 +25,8 @@ const daysOfWeek = [
 export const WorkoutReminder = () => {
   const [times, setTimes] = useState<any>(Array(7).fill(""));
   const { push } = useRouter();
+  const { supabaseUser } = useAuth();
+  const supabase = useSupabaseClient();
 
   function convertTo12HourFormat(time: string) {
     // Split the time string into hours and minutes
@@ -109,17 +116,65 @@ export const WorkoutReminder = () => {
         ))}
       </div>
       <Button
-        onClick={() => {
-          toast.success(
-            "Awesome we have saved your workout routine , you will be reminded every single day an hour before your workout on whatsapp !",
-            {
-              duration: 6000,
-            }
-          );
-          setTimeout(() => {
-            push("/");
-          }, 6000);
-        }}
+        onClick={
+          supabaseUser?.id
+            ? async () => {
+                toast.success(
+                  "Awesome we have saved your workout routine , you will be reminded every single day an hour before your workout on whatsapp !",
+                  {
+                    duration: 6000,
+                  }
+                );
+                // Get the system timezone
+                const timeZone =
+                  Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                // Create a base date to combine with the time
+                const baseDate = new Date();
+
+                // Convert each time string to a Date object and then to UTC
+                const formattedTimes = times.map((time) => {
+                  if (time) {
+                    const dateWithTime = parse(time, "HH:mm", baseDate);
+                    console.log({ timeZone });
+                    const now = DateTime.now().setZone(timeZone);
+                    const offset = now.toFormat("ZZ");
+
+                    return `${dateWithTime.getHours()}:${
+                      dateWithTime.getMinutes() < 10
+                        ? `${0}${dateWithTime.getMinutes()}`
+                        : dateWithTime.getMinutes()
+                    }:00${offset}`;
+                  } else {
+                    return null;
+                  }
+                });
+                console.log({ formattedTimes });
+                await axios.post("/api/supabase/delete", {
+                  table: "workouts",
+                  match: {
+                    user_id: supabaseUser?.id,
+                  },
+                });
+                await axios.post("/api/supabase/insert", {
+                  table: "workouts",
+                  body: {
+                    user_id: supabaseUser?.id,
+                    1: formattedTimes[0],
+                    2: formattedTimes[1],
+                    3: formattedTimes[2],
+                    4: formattedTimes[3],
+                    5: formattedTimes[4],
+                    6: formattedTimes[5],
+                    7: formattedTimes[6],
+                  },
+                });
+                setTimeout(() => {
+                  push("/");
+                }, 6000);
+              }
+            : () => {}
+        }
         className="mt-2 w-full font-medium"
         size="lg"
         color="primary"

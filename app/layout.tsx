@@ -7,6 +7,7 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { Toaster, toast } from "sonner";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import 'react-international-phone/style.css';
 
 export default function RootLayout({ children, pageProps }: any) {
   const client = createBrowserSupabaseClient();

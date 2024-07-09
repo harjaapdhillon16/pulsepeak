@@ -6,6 +6,7 @@ import { Oval } from "react-loader-spinner";
 import { Button, CardFooter, Card, Image } from "@nextui-org/react";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 const DynamicComponentWithNoSSR = dynamic(
   () => import("../../../components/DietForm"),
@@ -17,6 +18,8 @@ const DynamicComponentWithNoSSR = dynamic(
 const Reminder = () => {
   const [loading, setLoading] = useState(false);
   const supabase = useSupabaseClient();
+  const { push } = useRouter();
+
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
@@ -38,9 +41,18 @@ const Reminder = () => {
           <AuthButton />
         </div>
       </nav>
-
+     
       <div className="p-3 w-screen mx-auto">
         <div className="max-w-[1024px] mx-auto">
+        <Button
+        onClick={() => {
+          push("/");
+        }}
+        variant="flat"
+        color="primary"
+      >
+        Back
+      </Button>
           <DynamicComponentWithNoSSR />
           {/* <div className="md:flex md:space-x-3 space-y-5 md:space-y-0 items-center">
             <div className="w-[400px]">

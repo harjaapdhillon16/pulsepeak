@@ -5,6 +5,8 @@ import { useForm, Controller } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/utils/hooks/useSupabase";
 import axios from "axios";
+import { PhoneInput } from "react-international-phone";
+import { PhoneNumberUtil } from "google-libphonenumber";
 
 const stepVariants = {
   initial: { x: 300, opacity: 0 },
@@ -17,14 +19,15 @@ export const MultiStepForm = ({ fetchUserData }: any) => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm();
   const { email, supabaseUser } = useAuth();
   const [step, setStep] = useState(1);
-  const totalSteps = 6;
+  const totalSteps = 7;
   const [formLoading, setFormLoading] = useState(false);
   const currentFormData = watch(); // Watch all form fields
-
+  console.log({ formLoading });
   const onSubmit = async (data) => {
     setFormLoading(true);
     await axios.post("/api/supabase/insert", {
@@ -37,6 +40,7 @@ export const MultiStepForm = ({ fetchUserData }: any) => {
         weight: data.weight,
         age: data.age,
         full_name: data.name,
+        whatsapp_number: data?.phone,
       },
     });
     fetchUserData?.();
@@ -54,6 +58,17 @@ export const MultiStepForm = ({ fetchUserData }: any) => {
       setStep(step - 1);
     }
   };
+  const phoneUtil = PhoneNumberUtil.getInstance();
+
+  const parseNumber = () => {
+    try {
+      return phoneUtil.isValidNumber(
+        phoneUtil.parseAndKeepRawInput(currentFormData?.phone ?? "")
+      );
+    } catch {
+      return false;
+    }
+  };
 
   const isCurrentStepValid = () => {
     switch (step) {
@@ -67,6 +82,10 @@ export const MultiStepForm = ({ fetchUserData }: any) => {
         return currentFormData.name;
       case 5:
         return currentFormData.experience;
+      case 6:
+        return currentFormData.age;
+      case 7:
+        return parseNumber();
       default:
         return false;
     }
@@ -327,6 +346,28 @@ export const MultiStepForm = ({ fetchUserData }: any) => {
                 </div>
               </motion.div>
             )}
+            {step === 7 && (
+              <motion.div
+                key={step}
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={stepVariants}
+                transition={{ type: "tween", duration: 0.15 }}
+                className="space-y-4 w-[250px]"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">
+                    Your Whatsapp Phone Number
+                  </label>
+                  <PhoneInput
+                    defaultCountry="in"
+                    value={watch("phone")}
+                    onChange={(phone) => setValue("phone", phone)}
+                  />
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
 
           <div className="flex justify-between mt-8">
@@ -379,7 +420,10 @@ export const MultiStepForm = ({ fetchUserData }: any) => {
             ) : (
               <button
                 type="submit"
-                className="bg-green-500 hover:bg-green-400 text-white font-light text-sm py-1 px-5 rounded-lg"
+                disabled={!isCurrentStepValid()}
+                className={`bg-green-500 hover:bg-green-400 text-white font-light text-sm py-1 px-5 rounded-lg  ${
+                  !isCurrentStepValid() && "opacity-50 cursor-not-allowed"
+                }`}
               >
                 {formLoading ? (
                   <svg

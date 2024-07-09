@@ -7,7 +7,7 @@ import { useSubscribed } from "@/utils/hooks/useIsSubscribed";
 
 export const AuthUserUI = () => {
   const { supabaseUser, fetchUserData, loading } = useAuth();
-  const { isSubscribed, loading: subscriptionLoading } = useSubscribed();
+  const { isSubscribed, loading: subscriptionLoading,subscribeData } = useSubscribed();
   console.log({subscriptionLoading})
   if ((loading && !supabaseUser?.full_name) || subscriptionLoading) {
     return (
@@ -38,10 +38,12 @@ export const AuthUserUI = () => {
   return (
     <>
       {Boolean(supabaseUser?.full_name) ? (
-        <UserMenu isSubscribed={isSubscribed as any} />
+        <UserMenu isSubscribed={isSubscribed as any} subscribeData={subscribeData as any} />
       ) : (
         <MultiStepForm fetchUserData={fetchUserData} />
       )}
     </>
   );
 };
+
+export default AuthUserUI;

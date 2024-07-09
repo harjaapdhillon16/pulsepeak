@@ -7,27 +7,48 @@ import {
   CardBody,
   CardFooter,
   Avatar,
+  Chip,
+  Spinner,
+  Button,
 } from "@nextui-org/react";
 import axios from "axios";
+import { LockKeyhole } from "lucide-react";
+import { Snippet } from "@nextui-org/react";
 
-export const UserMenu = ({ isSubscribed }: { isSubscribed: boolean }) => {
+export const UserMenu = ({
+  isSubscribed,
+  subscribeData,
+}: {
+  isSubscribed: boolean;
+  subscribeData: any;
+}) => {
   const { supabaseUser } = useAuth();
-  const [linkToSub, setLinkToSub] = useState("");
+  const [linkToWhatsapp, setLinkToWhatsapp] = useState("");
+  const [linkToTelegram, setLinkToTelegram] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (supabaseUser?.id && !isSubscribed) {
-        const { data } = await axios.post(
-          "/api/razorpay/create-subscription-link",
-          {
-            user_id: supabaseUser?.id,
-            email: supabaseUser?.email,
-          }
-        );
-        setLinkToSub(data);
+        const {
+          data: { telegram_url, whatsapp_url },
+        } = await axios.post("/api/razorpay/create-subscription-link", {
+          user_id: supabaseUser?.id,
+          email: supabaseUser?.email,
+        });
+        setLinkToWhatsapp(whatsapp_url);
+        setLinkToTelegram(telegram_url);
       }
     })();
   }, [supabaseUser, isSubscribed]);
+  {
+    console.log(
+      subscribeData,
+      subscribeData?.razorpay_data?.subscription?.entity?.plan_id ===
+        "plan_OUbCVEGaA370XM",
+      subscribeData?.razorpay_data?.subscription?.entity?.plan_id
+    );
+  }
   return (
     <div className="w-full px-4 min-h-[70vh]">
       <p className="text-2xl">Hey {supabaseUser?.full_name}</p>
@@ -55,26 +76,116 @@ export const UserMenu = ({ isSubscribed }: { isSubscribed: boolean }) => {
           <CardBody className="px-3 py-0 text-small text-default-400">
             <p className="text-xl font-medium text-white">
               Hey there , I can see you're not subscribed to pulsepeak , it's
-              only INR 29/ Month to gain access to all the amazing features !
+              only INR 49/ Month to gain access to all the amazing features !
             </p>
-            <p>Note : after payment please wait for 40-60 seconds for the payment to be processed.</p>
+            <p>
+              Note : after payment please wait for 40-60 seconds for the payment
+              to be processed.
+            </p>
           </CardBody>
-          <CardFooter className="gap-3">
-            {Boolean(linkToSub) && (
-              <a
-                target="_blank"
-                href={linkToSub}
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                rel="noopener"
-              >
-                Subscribe for just INR 29/ Month
-              </a>
+          <CardFooter className="gap-3 block">
+            {Boolean(linkToWhatsapp) && (
+              <div>
+                <a
+                  target="_blank"
+                  href={loading ? "" : linkToWhatsapp}
+                  onClick={() => {
+                    setLoading(true);
+                  }}
+                  className="text-black flex text-xl bg-green-400 hover:bg-green-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-400 dark:hover:bg-green-400 focus:outline-none "
+                  rel="noopener"
+                >
+                  {loading ? (
+                    <>
+                      <Spinner color="primary" />
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        className="w-20 h-20 mr-2 rounded-full"
+                        src="https://i.pinimg.com/736x/6c/78/49/6c784972cbf5806215d46fbda8b0c46a.jpg"
+                      />{" "}
+                      <div>
+                        <p>Subscribe the Whatsapp Version for INR 49/Month</p>
+                        <p className="text-sm">
+                          Recieve Regular updates on whatsapp
+                        </p>
+                        <Chip size="sm" color="primary">
+                          Recommended
+                        </Chip>
+                      </div>
+                    </>
+                  )}
+                </a>
+              </div>
+            )}
+            {Boolean(linkToTelegram) && (
+              <div>
+                <a
+                  target="_blank"
+                  href={loading ? "" : linkToTelegram}
+                  className="text-black mt-3 flex text-xl bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-500 dark:hover:bg-blue-500 focus:outline-none "
+                  rel="noopener"
+                >
+                  {loading ? (
+                    <>
+                      <Spinner color="white" />
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        className="w-20 h-20 mr-2 rounded-full"
+                        src="https://vswwfumiihhlpfevsxcr.supabase.co/storage/v1/object/public/assets/png_transparent_computer_icons_telegram_logo_angle_white_triangle_thumbnail_removebg_preview.png?t=2024-07-07T21%3A48%3A59.982Z"
+                      />{" "}
+                      <div>
+                        <p className="text-white">
+                          Subscribe the Telegram Version for INR 29/Month
+                        </p>
+                        <p className="text-sm text-white">
+                          Recieve Regular updates on Telegram
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </a>
+              </div>
             )}
           </CardFooter>
         </Card>
       )}
+      {subscribeData?.razorpay_data?.payload?.subscription?.entity?.plan_id ===
+        "plan_OUbCVEGaA370XM" &&
+        !supabaseUser?.telegram_chat_id && (
+          <Card>
+            <CardBody>
+              <p>
+                We see that you have subscribed to the telegram version, please
+                do the following{" "}
+              </p>
+              <p>Go to the Pulsepeak Telegram</p>
+              <a
+                href="https://t.me/pulsepeak_bot"
+                className="my-2"
+                target="_blank"
+              >
+                <Button color="primary">Pulsepeak Telegram</Button>
+              </a>
+              <p>Then paste the user activation code</p>
+              <Snippet size="lg">
+                useractivation:{btoa(supabaseUser?.email)}
+              </Snippet>
+            </CardBody>
+          </Card>
+        )}
+      {!isSubscribed && (
+        <div className="text-center top-10 z-40 left-[20%]">
+          <LockKeyhole className="mx-auto" size={80} />
+          <p>Please subscribe in order to access all the amazing features</p>
+        </div>
+      )}
+
       <div
-        className={`grid lg:grid-cols-2 mt-2 gap-4 grid-cols-1 ${
+        className={`grid relative lg:grid-cols-2 mt-2 gap-4 grid-cols-1 ${
           isSubscribed ? "" : "opacity-45"
         }`}
       >

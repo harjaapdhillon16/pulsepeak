@@ -237,6 +237,19 @@ const WorkoutPlanning = () => {
       const {
         data: { data },
       } = await axios.post("/api/app/create_workouts", formdata);
+      await axios.post("/api/supabase/delete", {
+        table: "workout_json",
+        match: {
+          user_id: supabaseUser?.id,
+        },
+      });
+      await axios.post("/api/supabase/insert", {
+        table: "workout_json",
+        body: {
+          user_id: supabaseUser?.id,
+          json: data,
+        },
+      });
       const generatedHTML = generateWorkoutPlan(data, supabaseUser.full_name);
       const options = {
         margin: 0,

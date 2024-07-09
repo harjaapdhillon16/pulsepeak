@@ -16,6 +16,7 @@ export const useSubscribed = () => {
   const [isSubscribed, setIsSubscribed] = useState(
     localStorage.getItem("isSubscribed") ?? false
   );
+  const [subscribeData, setSubscribeData] = useState();
 
   useEffect(() => {
     let intervalId: any;
@@ -31,6 +32,7 @@ export const useSubscribed = () => {
         });
         if (data?.[0]) {
           setIsSubscribed(true);
+          setSubscribeData(data?.[0]);
           localStorage.setItem("isSubscribed", "true");
           clearInterval(intervalId);
         }
@@ -52,5 +54,6 @@ export const useSubscribed = () => {
   return {
     isSubscribed,
     loading,
+    subscribeData
   };
 };

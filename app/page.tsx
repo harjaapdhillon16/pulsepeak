@@ -1,13 +1,17 @@
 "use client";
 import AuthButton from "../components/AuthButton";
 import Hero from "@/components/Hero";
-import { AuthUserUI } from "@/components/AuthUserUI";
+import dynamic from 'next/dynamic'
 import { useAuth } from "@/utils/hooks/useSupabase";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { BottomTab } from "@/components/bottomTabs";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
 import { useSubscribed } from "@/utils/hooks/useIsSubscribed";
+const AuthUserUI = dynamic(() => import('../components/AuthUserUI'), {
+  loading: () => <p>Loading...</p>,
+})
+ 
 
 export default function Index() {
   const { email } = useAuth();
