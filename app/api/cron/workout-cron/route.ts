@@ -161,6 +161,7 @@ function getCurrentTimeWithOffset() {
 
   return `${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
 }
+export const revalidate = 0
 
 export const GET = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
