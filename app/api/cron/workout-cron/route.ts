@@ -162,7 +162,7 @@ function getCurrentTimeWithOffset() {
   return `${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
 }
 
-export const POST = async (req: any, res: NextApiResponse) => {
+export const GET = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
   workouts.forEach((workout, index) => {
     const { reminderTime, workoutTime, user_id, timeZone, reminderTime1 } =
