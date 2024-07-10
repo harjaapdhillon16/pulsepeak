@@ -24,15 +24,11 @@ const responseTexts = {
 };
 
 function extractTime(date) {
-  console.log(date.split("T"));
   return date.split("T")[1].split(".")[0];
 }
 
-function isAfter(date1, date2) {
-  return extractTime(date1) > extractTime(date2);
-}
-
 function isBefore(date1, date2) {
+  console.log(extractTime(date1), extractTime(date2));
   return extractTime(date1) < extractTime(date2);
 }
 
@@ -55,12 +51,12 @@ function convertToUTC(timeString) {
   return utcTime.toISOString();
 }
 
-function subMinutes(dateTimeString, minutesToAdd) {
+function subMinutes(dateTimeString, minutesToSubtract) {
   // Parse the input datetime string
   const dateTime = new Date(dateTimeString);
 
-  // Add minutes to the datetime
-  dateTime.setUTCMinutes(dateTime.getUTCMinutes() + minutesToAdd);
+  // Subtract minutes from the datetime
+  dateTime.setUTCMinutes(dateTime.getUTCMinutes() - minutesToSubtract);
 
   // Format the new datetime in ISO 8601 format
   const newDateTimeString = dateTime.toISOString();
@@ -85,11 +81,13 @@ async function getTodayWorkouts() {
     const workoutTime = convertToUTC(workout[weekKeys[day]]);
 
     const reminderTime = subMinutes(workoutTime, 30);
+    const reminderTime1 = subMinutes(workoutTime, 25);
 
     return {
       ...workout,
       workoutTime: workoutTime,
       reminderTime,
+      reminderTime1,
     };
   });
 }
@@ -126,10 +124,6 @@ async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
         "Content-Type": "application/json",
       },
     });
-
-    console.log(
-      `Reminder sent to ${phoneNumber} for workout at ${workoutTime}`
-    );
   } catch (error) {
     console.error("Error sending WhatsApp reminder:", error);
   }
@@ -151,33 +145,59 @@ const sendTelegramMessage = (chat_id) => {
   );
 };
 
+function getCurrentTimeWithOffset() {
+  const date = new Date();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  const offset = -date.getTimezoneOffset();
+  const sign = offset >= 0 ? "+" : "-";
+  const offsetHours = String(Math.floor(Math.abs(offset) / 60)).padStart(
+    2,
+    "0"
+  );
+  const offsetMinutes = String(Math.abs(offset) % 60).padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
+}
+
 export const POST = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
-  console.log({ workouts });
-  workouts.forEach((workout) => {
-    const { reminderTime, workoutTime, user_id, timeZone } = workout;
+  workouts.forEach((workout, index) => {
+    const { reminderTime, workoutTime, user_id, timeZone, reminderTime1 } =
+      workout;
     const {
       full_name: name,
       whatsapp_number: phoneNumber,
       telegram_chat_id: chat_id,
     } = user_id;
     const currentLocalTime = new Date();
-    console.log({
-      currentLocalTime: currentLocalTime.toISOString(),
-      workoutTime,
-      reminderTime,
-    });
+    const after25Minute = new Date(reminderTime1).getTime();
+    const after30Minute = new Date(reminderTime).getTime();
+    const currentLocalTimeUTC = convertToUTC(getCurrentTimeWithOffset());
+    console.log(
+      isBefore(reminderTime, currentLocalTimeUTC),
+      isBefore(currentLocalTimeUTC, workoutTime)
+    );
     if (
-      isAfter(reminderTime, currentLocalTime.toISOString()) &&
-      isBefore(currentLocalTime.toISOString(), workoutTime)
+      isBefore(reminderTime, currentLocalTimeUTC) &&
+      isBefore(currentLocalTimeUTC, workoutTime)
     ) {
-      if (phoneNumber) {
-        sendWhatsAppReminder(phoneNumber, workoutTime, name);
+      if (isBefore(currentLocalTimeUTC, reminderTime1)) {
+        if (phoneNumber) {
+          sendWhatsAppReminder(phoneNumber, workoutTime, name);
+        }
+        if (chat_id) {
+          setTimeout(() => {
+            sendTelegramMessage(chat_id);
+          }, index * 40);
+        }
+      } else {
+        console.log("not sent");
       }
-      if (chat_id) {
-        console.log({ chat_id });
-        sendTelegramMessage(chat_id);
-      }
+    } else {
+      console.log("not sent");
     }
   });
 
