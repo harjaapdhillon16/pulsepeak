@@ -171,7 +171,13 @@ export const GET = async (req: any, res: NextApiResponse) => {
     console.log(
       isBefore(reminderTime, currentLocalTimeUTC),
       isBefore(currentLocalTimeUTC, workoutTime),
-      isBefore(currentLocalTimeUTC, reminderTime1)
+      isBefore(currentLocalTimeUTC, reminderTime1),
+      {
+        workoutTime,
+        reminderTime,
+        currentLocalTimeUTC,
+        reminderTime1,
+      }
     );
     if (
       isBefore(reminderTime, currentLocalTimeUTC) &&
