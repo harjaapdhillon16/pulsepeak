@@ -216,8 +216,8 @@ export const GET = async (req: any, res: NextApiResponse) => {
       if (chat_id) {
         setTimeout(() => {
           sendTelegramMessage(chat_id);
-          console.log("sending Telegram", chat_id);
         }, index * 40);
+        console.log("sending Telegram", chat_id);
       }
     } else {
     }
