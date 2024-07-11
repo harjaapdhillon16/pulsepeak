@@ -75,8 +75,7 @@ function getCurrentDateTimeISOWithOffset(timeString) {
   const [timePart, offsetPart] = timeString.split("+");
   function calculateMinuteOffset(offsetString) {
     // Split the offset string into hours and minutes parts
-    let parts = offsetString.split(":");
-
+    let parts = offsetString?.split(":");
     // Parse hours and minutes from the parts array
     let hours = parseInt(parts[0], 10);
     let minutes = parseInt(parts[1], 10);
@@ -88,7 +87,6 @@ function getCurrentDateTimeISOWithOffset(timeString) {
   }
   // Get current DateTime object in UTC
   let utcDateTime = DateTime.utc();
-
   // Add the offset in minutes
   let localDateTime = utcDateTime.plus({
     minutes: calculateMinuteOffset(offsetPart),
@@ -111,22 +109,41 @@ async function getTodayWorkouts() {
 
   return data.map((workout) => {
     const dayToGet =
-      getCurrentDateTimeISOWithOffset(workout[1]).getDay() === 0
+      getCurrentDateTimeISOWithOffset(
+        workout[1] ??
+          workout[2] ??
+          workout[3] ??
+          workout[4] ??
+          workout[5] ??
+          workout[6] ??
+          workout[7]
+      ).getDay() === 0
         ? 1
-        : getCurrentDateTimeISOWithOffset(workout[1]).getDay() + 1;
-    const workoutTime = calculateDateTimeFromOffset(
-      workout[weekKeys[dayToGet]]
-    );
-    const reminderTime = subMinutes(workoutTime, 30);
-    const reminderTime1 = subMinutes(workoutTime, 25);
+        : getCurrentDateTimeISOWithOffset(
+            workout[1] ??
+              workout[2] ??
+              workout[3] ??
+              workout[4] ??
+              workout[5] ??
+              workout[6] ??
+              workout[7]
+          ).getDay() + 1;
+    const workoutTime = workout[weekKeys[dayToGet]]
+      ? calculateDateTimeFromOffset(workout[weekKeys[dayToGet]])
+      : null;
+    if (workoutTime) {
+      const reminderTime = subMinutes(workoutTime, 30);
+      const reminderTime1 = subMinutes(workoutTime, 25);
 
-    return {
-      ...workout,
-      workoutTime,
-      reminderTime,
-      reminderTime1,
-      time: workout[weekKeys[dayToGet]],
-    };
+      return {
+        ...workout,
+        workoutTime,
+        reminderTime,
+        reminderTime1,
+        time: workout[weekKeys[dayToGet]],
+      };
+    } else {
+    }
   });
 }
 
@@ -185,6 +202,7 @@ export const GET = async (req: any, res: NextApiResponse) => {
 
   workouts.forEach((workout, index) => {
     const { reminderTime, workoutTime, user_id, reminderTime1, time } = workout;
+    console.log({ time });
     const currentTimeUTC = getCurrentDateTimeISOWithOffset(time);
 
     const {
