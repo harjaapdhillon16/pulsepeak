@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/workout-cron",
-      "schedule": "*/5 * * * *"
+      "schedule": "*/4 * * * *"
     }
   ],
   "headers": [
