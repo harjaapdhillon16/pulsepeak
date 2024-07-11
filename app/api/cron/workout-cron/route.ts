@@ -17,8 +17,8 @@ const weekKeys = {
   6: 6,
 };
 const responseTexts = {
-  yes_session: "Yes I attended my session",
-  no_session: "No I skipped my session",
+  yes_session: "Yes I will attend my session",
+  no_session: "No I am skipping my session",
   yes_meal: "Yes I had my meal",
   no_meal: "No I skipped my meal",
 };
@@ -97,25 +97,15 @@ async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
     const url = "https://graph.facebook.com/v19.0/354548651078391/messages";
     const token = process.env.WHATSAPP_ACCESS_TOKEN;
     const payload = {
-      messaging_product: "whatsapp",
-      to: phoneNumber,
-      type: "template",
-      template: {
-        name: "g",
-        components: [
-          {
-            type: "body",
-            parameters: [
-              { type: "text", text: name },
-              {
-                type: "text",
-                text: "(Please set the workouts by going into workout details settings)",
-              },
-            ],
-          },
-        ],
-        language: { code: "en" },
-      },
+      phoneNumber: phoneNumber,
+      parameters: [
+        { type: "text", text: name },
+        {
+          type: "text",
+          text: "(Please set the workouts by going into workout details settings)",
+        },
+      ],
+      templateName: "g",
     };
 
     await axios.post(url, payload, {
@@ -130,11 +120,12 @@ async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
 }
 
 const sendTelegramMessage = (chat_id) => {
-  const bot = new TelegramBot(token);
-  bot.sendMessage(
-    chat_id,
-    "This is your reminder to go do your workout which starts in less than 30 minutes and here are the workout details",
+  await axios.post(
+    "https://pulsepeak-1ed36d73343d.herokuapp.com/telegram-message",
     {
+      chatId: chat_id,
+      message:
+        "This is your reminder to go do your workout which starts in less than 30 minutes",
       reply_markup: {
         inline_keyboard: [
           [{ text: responseTexts.yes_session, callback_data: "yes_session" }],
