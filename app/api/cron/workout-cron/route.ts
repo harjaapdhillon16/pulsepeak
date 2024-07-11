@@ -24,11 +24,11 @@ const responseTexts = {
 };
 
 function extractTime(date) {
-  return date.split("T")[1].split(".")[0];
+  const dateInMillisecond = new Date(date).getTime();
+  return dateInMillisecond;
 }
 
 function isBefore(date1, date2) {
-  console.log(extractTime(date1), extractTime(date2));
   return extractTime(date1) < extractTime(date2);
 }
 
@@ -161,7 +161,7 @@ function getCurrentTimeWithOffset() {
 
   return `${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
 }
-export const revalidate = 0
+export const revalidate = 0;
 
 export const GET = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
@@ -188,10 +188,12 @@ export const GET = async (req: any, res: NextApiResponse) => {
       if (isBefore(currentLocalTimeUTC, reminderTime1)) {
         if (phoneNumber) {
           sendWhatsAppReminder(phoneNumber, workoutTime, name);
+          console.log("sending whatsapp");
         }
         if (chat_id) {
           setTimeout(() => {
             sendTelegramMessage(chat_id);
+            console.log("sending telegram");
           }, index * 40);
         }
       } else {
