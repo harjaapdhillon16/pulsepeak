@@ -163,43 +163,43 @@ function getCurrentTimeWithOffset() {
 }
 
 export const GET = async (req: any, res: NextApiResponse) => {
-  const workouts = await getTodayWorkouts();
-  workouts.forEach((workout, index) => {
-    const { reminderTime, workoutTime, user_id, timeZone, reminderTime1 } =
-      workout;
-    const {
-      full_name: name,
-      whatsapp_number: phoneNumber,
-      telegram_chat_id: chat_id,
-    } = user_id;
-    const currentLocalTime = new Date();
-    const after25Minute = new Date(reminderTime1).getTime();
-    const after30Minute = new Date(reminderTime).getTime();
-    const currentLocalTimeUTC = convertToUTC(getCurrentTimeWithOffset());
-    console.log(
-      isBefore(reminderTime, currentLocalTimeUTC),
-      isBefore(currentLocalTimeUTC, workoutTime)
-    );
-    if (
-      isBefore(reminderTime, currentLocalTimeUTC) &&
-      isBefore(currentLocalTimeUTC, workoutTime)
-    ) {
-      if (isBefore(currentLocalTimeUTC, reminderTime1)) {
-        if (phoneNumber) {
-          sendWhatsAppReminder(phoneNumber, workoutTime, name);
-        }
-        if (chat_id) {
-          setTimeout(() => {
-            sendTelegramMessage(chat_id);
-          }, index * 40);
-        }
-      } else {
-        console.log("not sent");
-      }
-    } else {
-      console.log("not sent");
-    }
-  });
+  // const workouts = await getTodayWorkouts();
+  // workouts.forEach((workout, index) => {
+  //   const { reminderTime, workoutTime, user_id, timeZone, reminderTime1 } =
+  //     workout;
+  //   const {
+  //     full_name: name,
+  //     whatsapp_number: phoneNumber,
+  //     telegram_chat_id: chat_id,
+  //   } = user_id;
+  //   const currentLocalTime = new Date();
+  //   const after25Minute = new Date(reminderTime1).getTime();
+  //   const after30Minute = new Date(reminderTime).getTime();
+  //   const currentLocalTimeUTC = convertToUTC(getCurrentTimeWithOffset());
+  //   console.log(
+  //     isBefore(reminderTime, currentLocalTimeUTC),
+  //     isBefore(currentLocalTimeUTC, workoutTime)
+  //   );
+  //   if (
+  //     isBefore(reminderTime, currentLocalTimeUTC) &&
+  //     isBefore(currentLocalTimeUTC, workoutTime)
+  //   ) {
+  //     if (isBefore(currentLocalTimeUTC, reminderTime1)) {
+  //       if (phoneNumber) {
+  //         sendWhatsAppReminder(phoneNumber, workoutTime, name);
+  //       }
+  //       if (chat_id) {
+  //         setTimeout(() => {
+  //           sendTelegramMessage(chat_id);
+  //         }, index * 40);
+  //       }
+  //     } else {
+  //       console.log("not sent");
+  //     }
+  //   } else {
+  //     console.log("not sent");
+  //   }
+  // });
 
   return NextResponse.json({ success: true });
 };
