@@ -4,6 +4,7 @@ import { supabase } from "../../utils/supabase";
 import { NextResponse } from "next/server";
 import axios from "axios";
 import TelegramBot from "node-telegram-bot-api";
+import { DateTime } from "luxon";
 
 const token = "7421455490:AAFp-ksnq7xcR8TqrJq1K8YzOJyCOrIakDo";
 
@@ -24,53 +25,84 @@ const responseTexts = {
 };
 
 function extractTime(date) {
-  const dateInMillisecond = new Date(date).getTime();
-  return dateInMillisecond;
+  return new Date(date).getTime();
 }
 
 function isBefore(date1, date2) {
   return extractTime(date1) < extractTime(date2);
 }
 
-function convertToUTC(timeString) {
-  // Extract the time and offset parts from the string
-  const [timePart, offsetPart] = timeString.split("+");
-  const [hours, minutes, seconds] = timePart.split(":").map(Number);
-  const [offsetHours, offsetMinutes] = offsetPart.split(":").map(Number);
+function calculateDateTimeFromOffset(timeString) {
+  // Extract time and offset from the input string
+  let [time, offsetString] = timeString.split("+");
+  let [hours, minutes, seconds] = time
+    .split(":")
+    .map((num) => parseInt(num, 10));
+
+  // Calculate the total offset in minutes
+  let offsetParts = offsetString.split(":");
+  let offsetHours = parseInt(offsetParts[0], 10);
+  let offsetMinutes = parseInt(offsetParts[1], 10);
+  let totalOffsetMinutes = offsetHours * 60 + offsetMinutes;
+
+  // Get current DateTime in UTC
+  let utcDateTime = DateTime.utc();
 
   // Calculate the total offset in milliseconds
-  const offsetInMilliseconds = (offsetHours * 60 + offsetMinutes) * 60 * 1000;
+  let offsetMilliseconds = totalOffsetMinutes * 60 * 1000;
 
-  // Create a date object for the time part
-  const date = new Date();
-  date.setUTCHours(hours, minutes, seconds, 0);
+  // Create new DateTime adjusted by the offset
+  let localDateTime = utcDateTime.plus({ milliseconds: offsetMilliseconds });
 
-  // Convert the time to UTC by subtracting the offset
-  const utcTime = new Date(date.getTime() - offsetInMilliseconds);
+  // Set the time to the provided hours, minutes, and seconds
+  localDateTime = localDateTime.set({
+    hour: hours,
+    minute: minutes,
+    second: seconds,
+  });
 
-  return utcTime.toISOString();
+  return new Date(localDateTime);
 }
 
 function subMinutes(dateTimeString, minutesToSubtract) {
-  // Parse the input datetime string
   const dateTime = new Date(dateTimeString);
-
-  // Subtract minutes from the datetime
   dateTime.setUTCMinutes(dateTime.getUTCMinutes() - minutesToSubtract);
+  return dateTime.toISOString();
+}
 
-  // Format the new datetime in ISO 8601 format
-  const newDateTimeString = dateTime.toISOString();
+function getCurrentDateTimeISOWithOffset(timeString) {
+  // Example timeString format: "03:54:00+05:30"
+  const [timePart, offsetPart] = timeString.split("+");
+  function calculateMinuteOffset(offsetString) {
+    // Split the offset string into hours and minutes parts
+    let parts = offsetString.split(":");
 
-  return newDateTimeString;
+    // Parse hours and minutes from the parts array
+    let hours = parseInt(parts[0], 10);
+    let minutes = parseInt(parts[1], 10);
+
+    // Calculate total offset in minutes
+    let totalOffset = hours * 60 + minutes;
+
+    return totalOffset;
+  }
+  // Get current DateTime object in UTC
+  let utcDateTime = DateTime.utc();
+
+  // Add the offset in minutes
+  let localDateTime = utcDateTime.plus({
+    minutes: calculateMinuteOffset(offsetPart),
+  });
+
+  return new Date(localDateTime);
 }
 
 async function getTodayWorkouts() {
-  const d = new Date();
-  let day = d.getDay();
-
   const { data, error } = await supabase
     .from("workouts")
-    .select(`${day}, user_id (full_name, whatsapp_number, telegram_chat_id)`);
+    .select(
+      `1,2,3,4,5,6,7, user_id (full_name, whatsapp_number, telegram_chat_id)`
+    );
 
   if (error) {
     console.error("Error fetching workouts:", error);
@@ -78,22 +110,30 @@ async function getTodayWorkouts() {
   }
 
   return data.map((workout) => {
-    const workoutTime = convertToUTC(workout[weekKeys[day]]);
-
+    const dayToGet =
+      getCurrentDateTimeISOWithOffset(workout[1]).getDay() === 0
+        ? 1
+        : getCurrentDateTimeISOWithOffset(workout[1]).getDay() + 1;
+    const workoutTime = calculateDateTimeFromOffset(
+      workout[weekKeys[dayToGet]]
+    );
     const reminderTime = subMinutes(workoutTime, 30);
     const reminderTime1 = subMinutes(workoutTime, 25);
 
     return {
       ...workout,
-      workoutTime: workoutTime,
+      workoutTime,
       reminderTime,
       reminderTime1,
+      time: workout[weekKeys[dayToGet]],
     };
   });
 }
 
 async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
   try {
+    const url = "https://graph.facebook.com/v19.0/354548651078391/messages";
+    const token = process.env.WHATSAPP_ACCESS_TOKEN;
     const payload = {
       phoneNumber: phoneNumber,
       parameters: [
@@ -106,7 +146,16 @@ async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
       templateName: "g",
     };
 
-    await axios.post("https://pulsepeak-1ed36d73343d.herokuapp.com/whatsapp-message", payload);
+    await axios.post(
+      "https://pulsepeak-1ed36d73343d.herokuapp.com/whatsapp-message",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error sending WhatsApp reminder:", error);
   }
@@ -129,62 +178,48 @@ const sendTelegramMessage = async (chat_id) => {
   );
 };
 
-function getCurrentTimeWithOffset() {
-  const date = new Date();
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
-
-  const offset = -date.getTimezoneOffset();
-  const sign = offset >= 0 ? "+" : "-";
-  const offsetHours = String(Math.floor(Math.abs(offset) / 60)).padStart(
-    2,
-    "0"
-  );
-  const offsetMinutes = String(Math.abs(offset) % 60).padStart(2, "0");
-
-  return `${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
-}
 export const revalidate = 0;
 
 export const GET = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
+
   workouts.forEach((workout, index) => {
-    const { reminderTime, workoutTime, user_id, reminderTime1 } = workout;
+    const { reminderTime, workoutTime, user_id, reminderTime1, time } = workout;
+    const currentTimeUTC = getCurrentDateTimeISOWithOffset(time);
+
     const {
       full_name: name,
       whatsapp_number: phoneNumber,
       telegram_chat_id: chat_id,
     } = user_id;
-    const currentLocalTimeUTC = convertToUTC(getCurrentTimeWithOffset());
+
     console.log(
-      isBefore(reminderTime, currentLocalTimeUTC),
-      isBefore(currentLocalTimeUTC, workoutTime),
-      isBefore(currentLocalTimeUTC, reminderTime1),
+      "Workout Time Comparison:",
       {
-        workoutTime,
         reminderTime,
-        currentLocalTimeUTC,
+        workoutTime,
+        currentTimeUTC,
         reminderTime1,
-      }
+      },
+      isBefore(reminderTime, currentTimeUTC),
+      isBefore(currentTimeUTC, reminderTime1)
     );
 
     if (
-      isBefore(reminderTime, currentLocalTimeUTC) &&
-      isBefore(currentLocalTimeUTC, reminderTime1)
+      isBefore(reminderTime, currentTimeUTC) &&
+      isBefore(currentTimeUTC, reminderTime1)
     ) {
       if (phoneNumber) {
         sendWhatsAppReminder(phoneNumber, workoutTime, name);
-        console.log("sending whatsapp");
+        console.log("sending WhatsApp", phoneNumber);
       }
       if (chat_id) {
         setTimeout(() => {
           sendTelegramMessage(chat_id);
-          console.log("sending telegram");
+          console.log("sending Telegram", chat_id);
         }, index * 40);
       }
     } else {
-      console.log("not sent (reminderTime1 condition)");
     }
   });
 
