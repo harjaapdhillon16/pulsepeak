@@ -33,6 +33,9 @@ export function WorkoutPlanForm({onSubmit}) {
     <div className="p-4">
       <form onSubmit={handleSubmit(submitFunc)} className="space-y-6">
         <div>
+        <h4 className="text-2xl font-semibold mb-2">
+            Let's Plan you an amazing workout{" "}
+          </h4>
           <h4 className="text-xl font-semibold mb-2">Fitness Goals</h4>
           <RadioGroup
             label="What are your primary fitness goals?"

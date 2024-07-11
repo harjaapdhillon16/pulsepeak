@@ -227,6 +227,7 @@ const WorkoutPlanning = () => {
   const { push } = useRouter();
   const { supabaseUser } = useAuth();
   const [success, setSuccess] = useState(false);
+  const [allDataForWorkouts, setAllDataForWorkouts] = useState([]);
 
   const onSubmit = async (formdata: any) => {
     setLoading(true);
@@ -237,6 +238,7 @@ const WorkoutPlanning = () => {
       const {
         data: { data },
       } = await axios.post("/api/app/create_workouts", formdata);
+      setAllDataForWorkouts(data);
       await axios.post("/api/supabase/delete", {
         table: "workout_json",
         match: {
@@ -250,19 +252,8 @@ const WorkoutPlanning = () => {
           json: data,
         },
       });
-      const generatedHTML = generateWorkoutPlan(data, supabaseUser.full_name);
-      const options = {
-        margin: 0,
-        filename: "workout-plan.pdf",
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
-      };
-      var tempContainer = document.createElement("div");
-      tempContainer.innerHTML = generatedHTML;
-      console.log(generatedHTML);
-      htmltoPdf().set(options).from(tempContainer).save();
-      toast.success("Successfully download your workout plan");
+
+      toast.success("Successfully generated your PDF Plan");
       setSuccess(true);
     } catch {}
   };
@@ -304,6 +295,45 @@ const WorkoutPlanning = () => {
         {success ? (
           <div className="p-2">
             <p className="p-2 text-xl">Successfully generated a workout plan</p>
+            <table>
+              <tbody>
+                {allDataForWorkouts.map((item) => (
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td className="p-2">{item.name}</td>
+                    {item.workouts.map((_) => (
+                      <td className="text-xs p-2">
+                        {_.exercise}, Reps:{_.reps}, Sets:{_.sets}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <Button
+              onClick={() => {
+                const generatedHTML = generateWorkoutPlan(
+                  allDataForWorkouts,
+                  supabaseUser.full_name
+                );
+                const options = {
+                  margin: 0,
+                  filename: "workout-plan.pdf",
+                  image: { type: "jpeg", quality: 1 },
+                  html2canvas: { scale: 2 },
+                  jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
+                };
+                var tempContainer = document.createElement("div");
+                tempContainer.innerHTML = generatedHTML;
+                console.log(generatedHTML);
+                htmltoPdf().set(options).from(tempContainer).save();
+              }}
+              className="mt-4"
+              radius="sm"
+              size="lg"
+              color="danger"
+            >
+              Download PDF
+            </Button>
           </div>
         ) : loading ? (
           <>

@@ -119,7 +119,7 @@ async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
   }
 }
 
-const sendTelegramMessage = (chat_id) => {
+const sendTelegramMessage = async (chat_id) => {
   await axios.post(
     "https://pulsepeak-1ed36d73343d.herokuapp.com/telegram-message",
     {

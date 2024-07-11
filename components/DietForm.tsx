@@ -111,13 +111,13 @@ export const DietForm: React.FC = () => {
             onClick={() => {
               const options = {
                 margin: 0,
-                filename: "workout-plan.pdf",
+                filename: "Deit-Plan.pdf",
                 image: { type: "jpeg", quality: 1 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
               };
               var tempContainer = document.getElementById("pdftodownload");
-              (tempContainer as any).style.padding = '30px';
+              (tempContainer as any).style.padding = "30px";
               htmltoPdf().set(options).from(tempContainer).save();
             }}
             className="mt-4"
@@ -136,6 +136,9 @@ export const DietForm: React.FC = () => {
     <div className="pt-4 text-white">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
+          <h4 className="text-2xl font-semibold mb-2">
+            Let's Plan you an amazing diet{" "}
+          </h4>
           <h4 className="text-xl font-semibold mb-2">Goals</h4>
           <RadioGroup
             label="Muscle Goal"
@@ -144,9 +147,15 @@ export const DietForm: React.FC = () => {
               setValue("muscleGoal", e);
             }}
           >
-            <Radio className="text-white" value="Maintain">Maintain</Radio>
-            <Radio className="text-white" value="Increase">Increase</Radio>
-            <Radio className="text-white" value="Decrease">Decrease</Radio>
+            <Radio className="text-white" value="Maintain">
+              Maintain
+            </Radio>
+            <Radio className="text-white" value="Increase">
+              Increase
+            </Radio>
+            <Radio className="text-white" value="Decrease">
+              Decrease
+            </Radio>
           </RadioGroup>
           {errors.muscleGoal && (
             <p className="text-red-500">This field is required</p>
