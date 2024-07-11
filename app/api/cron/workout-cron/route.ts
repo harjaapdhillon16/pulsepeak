@@ -94,8 +94,6 @@ async function getTodayWorkouts() {
 
 async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
   try {
-    const url = "https://graph.facebook.com/v19.0/354548651078391/messages";
-    const token = process.env.WHATSAPP_ACCESS_TOKEN;
     const payload = {
       phoneNumber: phoneNumber,
       parameters: [
@@ -108,12 +106,7 @@ async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
       templateName: "g",
     };
 
-    await axios.post(url, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    await axios.post("https://pulsepeak-1ed36d73343d.herokuapp.com/whatsapp-message", payload);
   } catch (error) {
     console.error("Error sending WhatsApp reminder:", error);
   }
@@ -157,16 +150,12 @@ export const revalidate = 0;
 export const GET = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
   workouts.forEach((workout, index) => {
-    const { reminderTime, workoutTime, user_id, timeZone, reminderTime1 } =
-      workout;
+    const { reminderTime, workoutTime, user_id, reminderTime1 } = workout;
     const {
       full_name: name,
       whatsapp_number: phoneNumber,
       telegram_chat_id: chat_id,
     } = user_id;
-    const currentLocalTime = new Date();
-    const after25Minute = new Date(reminderTime1).getTime();
-    const after30Minute = new Date(reminderTime).getTime();
     const currentLocalTimeUTC = convertToUTC(getCurrentTimeWithOffset());
     console.log(
       isBefore(reminderTime, currentLocalTimeUTC),
@@ -179,26 +168,23 @@ export const GET = async (req: any, res: NextApiResponse) => {
         reminderTime1,
       }
     );
+
     if (
       isBefore(reminderTime, currentLocalTimeUTC) &&
-      isBefore(currentLocalTimeUTC, workoutTime)
+      isBefore(currentLocalTimeUTC, reminderTime1)
     ) {
-      if (isBefore(currentLocalTimeUTC, reminderTime1)) {
-        if (phoneNumber) {
-          sendWhatsAppReminder(phoneNumber, workoutTime, name);
-          console.log("sending whatsapp");
-        }
-        if (chat_id) {
-          setTimeout(() => {
-            sendTelegramMessage(chat_id);
-            console.log("sending telegram");
-          }, index * 40);
-        }
-      } else {
-        console.log("not sent");
+      if (phoneNumber) {
+        sendWhatsAppReminder(phoneNumber, workoutTime, name);
+        console.log("sending whatsapp");
+      }
+      if (chat_id) {
+        setTimeout(() => {
+          sendTelegramMessage(chat_id);
+          console.log("sending telegram");
+        }, index * 40);
       }
     } else {
-      console.log("not sent");
+      console.log("not sent (reminderTime1 condition)");
     }
   });
 
