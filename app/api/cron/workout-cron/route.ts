@@ -199,11 +199,11 @@ export const revalidate = 0;
 
 export const GET = async (req: any, res: NextApiResponse) => {
   const workouts = await getTodayWorkouts();
+  const currentTimeUTC = getCurrentDateTimeISOWithOffset(time);
 
   workouts.forEach((workout, index) => {
     const { reminderTime, workoutTime, user_id, reminderTime1, time } = workout;
     console.log({ time });
-    const currentTimeUTC = getCurrentDateTimeISOWithOffset(time);
 
     const {
       full_name: name,
