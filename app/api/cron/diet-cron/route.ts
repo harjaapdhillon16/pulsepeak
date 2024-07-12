@@ -31,7 +31,7 @@ async function getMealsForToday() {
       `meal_time,actual_meal, user_id (full_name, whatsapp_number, telegram_chat_id), user_id`
     )
     .contains("meal_time", [currentTime]);
-
+  console.log({ currentTime });
   if (error) {
     console.error("Error fetching workouts:", error);
     return [];
