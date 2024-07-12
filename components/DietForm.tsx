@@ -17,6 +17,7 @@ import {
 } from "@nextui-org/react";
 import htmltoPdf from "html2pdf.js";
 import { useAuth } from "@/utils/hooks/useSupabase";
+import DietPlanTable from "./DietComponent";
 
 type FormData = {
   weight: number;
@@ -104,9 +105,6 @@ export const DietForm: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <Button className="mt-4" radius="sm" size="lg" color="primary">
-            Remind Me of my Diet
-          </Button>
           <Button
             onClick={() => {
               const options = {
@@ -128,6 +126,7 @@ export const DietForm: React.FC = () => {
             Download PDF
           </Button>
         </div>
+        <DietPlanTable dietPlanArray={results} />
       </>
     );
   }
@@ -152,9 +151,6 @@ export const DietForm: React.FC = () => {
             </Radio>
             <Radio className="text-white" value="Increase">
               Increase
-            </Radio>
-            <Radio className="text-white" value="Decrease">
-              Decrease
             </Radio>
           </RadioGroup>
           {errors.muscleGoal && (

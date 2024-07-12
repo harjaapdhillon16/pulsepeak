@@ -15,10 +15,18 @@ const DynamicComponentWithNoSSR = dynamic(
   }
 );
 
+const DietComponent = dynamic(
+  () => import("../../../components/DietComponent"),
+  {
+    ssr: false,
+  }
+);
+
 const Reminder = () => {
   const [loading, setLoading] = useState(false);
   const supabase = useSupabaseClient();
   const { push } = useRouter();
+  const [createYourOwnDiet, setCreateYourOwnDiet] = useState<any>(null);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -41,53 +49,71 @@ const Reminder = () => {
           <AuthButton />
         </div>
       </nav>
-     
+
       <div className="p-3 w-screen mx-auto">
         <div className="max-w-[1024px] mx-auto">
-        <Button
-        onClick={() => {
-          push("/");
-        }}
-        variant="flat"
-        color="primary"
-      >
-        Back
-      </Button>
-          <DynamicComponentWithNoSSR />
-          {/* <div className="md:flex md:space-x-3 space-y-5 md:space-y-0 items-center">
-            <div className="w-[400px]">
-              <Card isFooterBlurred radius="lg" className="border-none">
-                <Image
-                  alt="Woman listing to music"
-                  className="object-cover"
-                  height={300}
-                  src="https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEzfHx8ZW58MHx8fHx8"
-                  width={400}
-                />
-                <CardFooter className="justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-                  <p className="text-sm text-white text-center font-bold">
-                    Create your own diet and set reminders
-                  </p>
-                </CardFooter>
-              </Card>
-            </div>
-            <div className="w-[400px]">
-              <Card isFooterBlurred radius="lg" className="border-none">
-                <Image
-                  alt="Woman listing to music"
-                  className="object-cover"
-                  height={300}
-                  src="https://images.unsplash.com/photo-1587015566802-5dc157c901cf?q=80&w=2786&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  width={400}
-                />
-                <CardFooter className="justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-                  <p className="text-sm text-white text-center font-bold">
-                    Use AI to generate your own diet
-                  </p>
-                </CardFooter>
-              </Card>
-            </div>
-          </div> */}
+          <Button
+            onClick={() => {
+              push("/");
+            }}
+            variant="flat"
+            color="primary"
+          >
+            Back
+          </Button>
+          <>
+            {typeof createYourOwnDiet !== "boolean" ? (
+              <div className="md:flex mt-3 md:space-x-3 space-y-5 md:space-y-0 items-center">
+                <div
+                  onClick={() => {
+                    setCreateYourOwnDiet(true);
+                  }}
+                  className="w-[400px] cursor-pointer"
+                >
+                  <Card isFooterBlurred radius="lg" className="border-none">
+                    <Image
+                      alt="Woman listing to music"
+                      className="object-cover"
+                      height={300}
+                      src="https://images.unsplash.com/photo-1506084868230-bb9d95c24759?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEzfHx8ZW58MHx8fHx8"
+                      width={400}
+                    />
+                    <CardFooter className="justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                      <p className="text-lg text-white text-center font-bold">
+                        Create your own diet and set reminders
+                      </p>
+                    </CardFooter>
+                  </Card>
+                </div>
+                <div
+                  onClick={() => {
+                    setCreateYourOwnDiet(false);
+                  }}
+                  className="w-[400px] cursor-pointer"
+                >
+                  <Card isFooterBlurred radius="lg" className="border-none">
+                    <Image
+                      alt="Woman listing to music"
+                      className="object-cover"
+                      height={300}
+                      src="https://images.unsplash.com/photo-1587015566802-5dc157c901cf?q=80&w=2786&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      width={400}
+                    />
+                    <CardFooter className="justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                      <p className="text-lg text-white text-center font-bold">
+                        Use AI to generate your own diet
+                      </p>
+                    </CardFooter>
+                  </Card>
+                </div>
+              </div>
+            ) : (
+              <>
+                {createYourOwnDiet && <DietComponent />}{" "}
+                {!createYourOwnDiet && <DynamicComponentWithNoSSR />}
+              </>
+            )}
+          </>
         </div>
       </div>
     </>
