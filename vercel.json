@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/workout-cron",
       "schedule": "*/4 * * * *"
+    },
+    {
+      "path": "/api/cron/diet-cron",
+      "schedule": "*/1 * * * *"
     }
   ],
   "headers": [
