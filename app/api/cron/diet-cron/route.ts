@@ -95,7 +95,7 @@ export const GET = async (req: any, res: NextApiResponse) => {
       (item) => item === currentTime
     );
     const allMeals = actual_meal[indexForMeal];
-    console.log({ indexForMeal, allMeals });
+    console.log({ indexForMeal, allMeals, user_id });
     if (user_id.telegram_chat_id) {
       setTimeout(() => {
         sendTelegramMessage(
