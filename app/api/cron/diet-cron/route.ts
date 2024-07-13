@@ -25,9 +25,10 @@ const responseTexts = {
 async function getMealsForToday() {
   const dateTime = new Date();
   const hours = `${dateTime.getUTCHours()}`;
+  const minutes = `${dateTime.getMinutes()}`;
   const currentTime = `${
     hours.length === 1 ? `0${hours}` : `${hours}`
-  }:${dateTime.getUTCMinutes()}:00`;
+  }:${minutes.length === 1 ? `0${minutes}` : `${minutes}`}:00`;
   const { data, error } = await supabase
     .from("diets")
     .select(
