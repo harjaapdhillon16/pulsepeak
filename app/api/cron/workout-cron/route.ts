@@ -107,44 +107,47 @@ async function getTodayWorkouts() {
     return [];
   }
 
-  return data.map((workout) => {
-    const dayToGet =
-      getCurrentDateTimeISOWithOffset(
-        workout[1] ??
-          workout[2] ??
-          workout[3] ??
-          workout[4] ??
-          workout[5] ??
-          workout[6] ??
-          workout[7]
-      ).getDay() === 0
-        ? 1
-        : getCurrentDateTimeISOWithOffset(
-            workout[1] ??
-              workout[2] ??
-              workout[3] ??
-              workout[4] ??
-              workout[5] ??
-              workout[6] ??
-              workout[7]
-          ).getDay() + 1;
-    const workoutTime = workout[weekKeys[dayToGet]]
-      ? calculateDateTimeFromOffset(workout[weekKeys[dayToGet]])
-      : null;
-    if (workoutTime) {
-      const reminderTime = subMinutes(workoutTime, 30);
-      const reminderTime1 = subMinutes(workoutTime, 25);
+  return data
+    .map((workout) => {
+      const dayToGet =
+        getCurrentDateTimeISOWithOffset(
+          workout[1] ??
+            workout[2] ??
+            workout[3] ??
+            workout[4] ??
+            workout[5] ??
+            workout[6] ??
+            workout[7]
+        ).getDay() === 0
+          ? 1
+          : getCurrentDateTimeISOWithOffset(
+              workout[1] ??
+                workout[2] ??
+                workout[3] ??
+                workout[4] ??
+                workout[5] ??
+                workout[6] ??
+                workout[7]
+            ).getDay() + 1;
+      const workoutTime = workout[weekKeys[dayToGet]]
+        ? calculateDateTimeFromOffset(workout[weekKeys[dayToGet]])
+        : null;
+      if (workoutTime) {
+        const reminderTime = subMinutes(workoutTime, 30);
+        const reminderTime1 = subMinutes(workoutTime, 25);
 
-      return {
-        ...workout,
-        workoutTime,
-        reminderTime,
-        reminderTime1,
-        time: workout[weekKeys[dayToGet]],
-      };
-    } else {
-    }
-  });
+        return {
+          ...workout,
+          workoutTime,
+          reminderTime,
+          reminderTime1,
+          time: workout[weekKeys[dayToGet]],
+        };
+      } else {
+        return null;
+      }
+    })
+    .filter((item) => item !== null);
 }
 
 async function sendWhatsAppReminder(phoneNumber, workoutTime, name) {
