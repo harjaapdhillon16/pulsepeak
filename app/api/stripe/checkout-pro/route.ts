@@ -1,12 +1,9 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-const stripe = new Stripe(
-  "sk_test_51PaHPhEmQSouFpqQhVFBzHpd7c3u1DIwPG6E72wWun1c7AnCQcoMeucsKUTZjXJZJTRh1Yc6DGVEk4lD1ayVcAox00uOsFK0fa",
-  {
-    apiVersion: "2024-06-20", // Ensure this matches your Stripe API version
-  }
-);
+const stripe = new Stripe(process.env.STRIPE_KEY ?? "", {
+  apiVersion: "2024-06-20", // Ensure this matches your Stripe API version
+});
 
 export async function POST(req: any, res: any) {
   const { redirect_url, user_id } = await req.json();
@@ -18,7 +15,7 @@ export async function POST(req: any, res: any) {
       mode: "subscription",
       line_items: [
         {
-          price: "price_1PcWzTEmQSouFpqQTY5KOfb0",
+          price: "price_1PcVX7EmQSouFpqQDwJJFfZz",
           quantity: 1,
         },
       ],
