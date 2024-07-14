@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { LockKeyhole } from "lucide-react";
 import { Snippet } from "@nextui-org/react";
+import { useLocationInIndia } from "@/utils/hooks/useIsIndia/useIndia";
 
 export const UserMenu = ({
   isSubscribed,
@@ -25,7 +26,9 @@ export const UserMenu = ({
   const { supabaseUser } = useAuth();
   const [linkToWhatsapp, setLinkToWhatsapp] = useState("");
   const [linkToTelegram, setLinkToTelegram] = useState("");
+  const [stripeLinkToWhatsapp, setStripeLinkToWhatsapp] = useState("");
   const [loading, setLoading] = useState(false);
+  const { isInIndia } = useLocationInIndia();
 
   useEffect(() => {
     (async () => {
@@ -38,6 +41,19 @@ export const UserMenu = ({
         });
         setLinkToWhatsapp(whatsapp_url);
         setLinkToTelegram(telegram_url);
+      }
+    })();
+  }, [supabaseUser, isSubscribed]);
+  useEffect(() => {
+    (async () => {
+      if (supabaseUser?.id && !isSubscribed) {
+        const {
+          data: { url },
+        } = await axios.post("/api/stripe/checkout-pro", {
+          redirect_url: window.location.origin,
+          user_id: supabaseUser?.id,
+        });
+        setStripeLinkToWhatsapp(url);
       }
     })();
   }, [supabaseUser, isSubscribed]);
@@ -76,7 +92,8 @@ export const UserMenu = ({
           <CardBody className="px-3 py-0 text-small text-default-400">
             <p className="text-xl font-medium text-white">
               Hey there , I can see you're not subscribed to pulsepeak , it's
-              only INR 49/ Month to gain access to all the amazing features !
+              only {isInIndia ? "INR 49" : "4.5 USD"}/ Month to gain access to
+              all the amazing features !
             </p>
             <p>
               Note : after payment please wait for 40-60 seconds for the payment
@@ -84,71 +101,117 @@ export const UserMenu = ({
             </p>
           </CardBody>
           <CardFooter className="gap-3 block">
-            {Boolean(linkToWhatsapp) && (
-              <div>
-                <a
-                  target="_blank"
-                  href={loading ? "" : linkToWhatsapp}
-                  onClick={() => {
-                    setLoading(true);
-                  }}
-                  className="text-black flex text-xl bg-green-400 hover:bg-green-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-400 dark:hover:bg-green-400 focus:outline-none "
-                  rel="noopener"
-                >
-                  {loading ? (
-                    <>
-                      <Spinner color="primary" />
-                    </>
-                  ) : (
-                    <>
-                      <img
-                        className="w-20 h-20 mr-2 rounded-full"
-                        src="https://i.pinimg.com/736x/6c/78/49/6c784972cbf5806215d46fbda8b0c46a.jpg"
-                      />{" "}
-                      <div>
-                        <p>Subscribe the Whatsapp Version for INR 49/Month</p>
-                        <p className="text-sm">
-                          Recieve Regular updates on whatsapp
-                        </p>
-                        <Chip size="sm" color="primary">
-                          Recommended
-                        </Chip>
-                      </div>
-                    </>
-                  )}
-                </a>
-              </div>
-            )}
-            {Boolean(linkToTelegram) && (
-              <div>
-                <a
-                  target="_blank"
-                  href={loading ? "" : linkToTelegram}
-                  className="text-black mt-3 flex text-xl bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-500 dark:hover:bg-blue-500 focus:outline-none "
-                  rel="noopener"
-                >
-                  {loading ? (
-                    <>
-                      <Spinner color="white" />
-                    </>
-                  ) : (
-                    <>
-                      <img
-                        className="w-20 h-20 mr-2 rounded-full"
-                        src="https://vswwfumiihhlpfevsxcr.supabase.co/storage/v1/object/public/assets/png_transparent_computer_icons_telegram_logo_angle_white_triangle_thumbnail_removebg_preview.png?t=2024-07-07T21%3A48%3A59.982Z"
-                      />{" "}
-                      <div>
-                        <p className="text-white">
-                          Subscribe the Telegram Version for INR 29/Month
-                        </p>
-                        <p className="text-sm text-white">
-                          Recieve Regular updates on Telegram
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </a>
-              </div>
+            {isInIndia ? (
+              <>
+                {Boolean(linkToWhatsapp) && (
+                  <div>
+                    <a
+                      target="_blank"
+                      href={linkToWhatsapp}
+                      onClick={() => {
+                        setLoading(true);
+                      }}
+                      className="text-black flex text-xl bg-green-400 hover:bg-green-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-400 dark:hover:bg-green-400 focus:outline-none "
+                      rel="noopener"
+                    >
+                      {loading ? (
+                        <>
+                          <Spinner color="primary" />
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            className="w-20 h-20 mr-2 rounded-full"
+                            src="https://i.pinimg.com/736x/6c/78/49/6c784972cbf5806215d46fbda8b0c46a.jpg"
+                          />{" "}
+                          <div>
+                            <p>
+                              Subscribe the Whatsapp Version for INR 49/Month
+                            </p>
+                            <p className="text-sm">
+                              Recieve Regular updates on whatsapp
+                            </p>
+                            <Chip size="sm" color="primary">
+                              Recommended
+                            </Chip>
+                          </div>
+                        </>
+                      )}
+                    </a>
+                  </div>
+                )}
+                {Boolean(linkToTelegram) && (
+                  <div>
+                    <a
+                      target="_blank"
+                      href={linkToTelegram}
+                      className="text-black mt-3 flex text-xl bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-500 dark:hover:bg-blue-500 focus:outline-none "
+                      rel="noopener"
+                    >
+                      {loading ? (
+                        <>
+                          <Spinner color="white" />
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            className="w-20 h-20 mr-2 rounded-full"
+                            src="https://vswwfumiihhlpfevsxcr.supabase.co/storage/v1/object/public/assets/png_transparent_computer_icons_telegram_logo_angle_white_triangle_thumbnail_removebg_preview.png?t=2024-07-07T21%3A48%3A59.982Z"
+                          />{" "}
+                          <div>
+                            <p className="text-white">
+                              Subscribe the Telegram Version for INR 29/Month
+                            </p>
+                            <p className="text-sm text-white">
+                              Recieve Regular updates on Telegram
+                            </p>
+                          </div>
+                        </>
+                      )}
+                    </a>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {Boolean(stripeLinkToWhatsapp) && (
+                  <div>
+                    <a
+                      target="_blank"
+                      href={stripeLinkToWhatsapp}
+                      onClick={() => {
+                        setLoading(true);
+                      }}
+                      className="text-black flex text-xl bg-green-400 hover:bg-green-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-400 dark:hover:bg-green-400 focus:outline-none "
+                      rel="noopener"
+                    >
+                      {loading ? (
+                        <>
+                          <Spinner color="primary" />
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            className="w-20 h-20 mr-2 rounded-full"
+                            src="https://i.pinimg.com/736x/6c/78/49/6c784972cbf5806215d46fbda8b0c46a.jpg"
+                          />{" "}
+                          <div>
+                            <p>
+                              Subscribe the Whatsapp Version for USD 4.5/Month
+                            </p>
+                            <p className="text-sm">
+                              Recieve Regular updates on whatsapp
+                            </p>
+                            <Chip size="sm" color="primary">
+                              Recommended
+                            </Chip>
+                          </div>
+                        </>
+                      )}
+                    </a>
+                  </div>
+                )}
+              </>
             )}
           </CardFooter>
         </Card>
