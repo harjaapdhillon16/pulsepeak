@@ -12,7 +12,7 @@ export const useLocationInIndia = () => {
       try {
         const response = await axios.get(`http://ip-api.com/json/`);
         const { country } = response.data;
-
+        alert(country)
         setIsInIndia(country === "India");
       } catch (err: any) {
         setError(err.message);
