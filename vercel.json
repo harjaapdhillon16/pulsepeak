@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "/api/app/**/*": {
+      "maxDuration": 100
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/workout-cron",
