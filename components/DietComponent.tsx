@@ -91,7 +91,7 @@ const DietPlanTable = ({ dietPlanArray }: any) => {
         user_id: supabaseUser?.id,
       },
     });
-    toast.info("Saved your workouts, will remind you of this everytime :)");
+    toast.info("Saved your diet plan, will remind you of this everytime :)");
   };
 
   return (
