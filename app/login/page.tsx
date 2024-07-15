@@ -16,7 +16,7 @@ export default function Login() {
       console.error("Error sending OTP:", error);
     } else {
       setOtpSent(true);
-      alert("Check your email for the OTP!");
+      toast.info("Check your email for the OTP!");
     }
   };
 

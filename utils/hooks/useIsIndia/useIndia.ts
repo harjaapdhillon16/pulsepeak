@@ -10,13 +10,10 @@ export const useLocationInIndia = () => {
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const response = await axios.get(`https://ipapi.co/json/`);
-        const { latitude, longitude } = response.data;
-        const point = turf.point([longitude, latitude]);
-        const indiaPolygon: any = indiaGeoJSON; // Ensure indiaGeoJSON is a valid GeoJSON object
-        const isWithinIndia = turf.booleanPointInPolygon(point, indiaPolygon);
+        const response = await axios.get(`http://ip-api.com/json/`);
+        const { country } = response.data;
 
-        setIsInIndia(isWithinIndia);
+        setIsInIndia(country === "India");
       } catch (err: any) {
         setError(err.message);
       }
