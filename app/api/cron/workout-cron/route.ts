@@ -45,7 +45,9 @@ function calculateDateTimeFromOffset(timeString) {
   let offsetParts = offsetString.split(":");
   let offsetHours = parseInt(offsetParts[0], 10);
   let offsetMinutes = parseInt(offsetParts?.[1] ?? "00", 10);
-  let totalOffsetMinutes = offsetHours * 60 + offsetMinutes;
+  let totalOffsetMinutes = timeString.includes("-")
+    ? -1 * offsetHours * 60 + -1 * offsetMinutes
+    : offsetHours * 60 + offsetMinutes;
 
   // Get current DateTime in UTC
   let utcDateTime = DateTime.utc();
