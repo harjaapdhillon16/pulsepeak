@@ -34,15 +34,17 @@ function isBefore(date1, date2) {
 
 function calculateDateTimeFromOffset(timeString) {
   // Extract time and offset from the input string
-  let [time, offsetString] = timeString.split("+");
+  let [time, offsetString] = timeString.includes("-")
+    ? timeString.split("-")
+    : timeString.split("+");
   let [hours, minutes, seconds] = time
     .split(":")
     .map((num) => parseInt(num, 10));
-
+  console.log({ offsetString });
   // Calculate the total offset in minutes
   let offsetParts = offsetString.split(":");
   let offsetHours = parseInt(offsetParts[0], 10);
-  let offsetMinutes = parseInt(offsetParts[1], 10);
+  let offsetMinutes = parseInt(offsetParts?.[1] ?? "00", 10);
   let totalOffsetMinutes = offsetHours * 60 + offsetMinutes;
 
   // Get current DateTime in UTC
@@ -72,13 +74,15 @@ function subMinutes(dateTimeString, minutesToSubtract) {
 
 function getCurrentDateTimeISOWithOffset(timeString) {
   // Example timeString format: "03:54:00+05:30"
-  const [timePart, offsetPart] = timeString.split("+");
+  const [timePart, offsetPart] = timeString.includes("+")
+    ? timeString.split("+")
+    : timeString.split("-");
   function calculateMinuteOffset(offsetString) {
     // Split the offset string into hours and minutes parts
     let parts = offsetString?.split(":");
     // Parse hours and minutes from the parts array
     let hours = parseInt(parts[0], 10);
-    let minutes = parseInt(parts[1], 10);
+    let minutes = parseInt(parts?.[1] ?? "00", 10);
 
     // Calculate total offset in minutes
     let totalOffset = hours * 60 + minutes;
