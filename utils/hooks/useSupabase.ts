@@ -30,6 +30,7 @@ export const useAuth = () => {
   const fetchUserData = useCallback(async () => {
     setLoading(true);
     const user_id = await user.auth.getUser();
+    console.log({ user_id });
     setUserData(user_id.data.user);
     if (user_id.data.user?.email) {
       const {
