@@ -87,7 +87,9 @@ function getCurrentDateTimeISOWithOffset(timeString) {
     let minutes = parseInt(parts?.[1] ?? "00", 10);
 
     // Calculate total offset in minutes
-    let totalOffset = hours * 60 + minutes;
+    let totalOffset = timeString.split("-")
+      ? -1 * hours * 60 + -1 * minutes
+      : hours * 60 + minutes;
 
     return totalOffset;
   }
