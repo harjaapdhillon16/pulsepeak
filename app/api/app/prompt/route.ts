@@ -7,13 +7,6 @@ const openai = new OpenAI({
   apiKey: "sk-proj-vSErwoAEqgiQXGsANeJST3BlbkFJHJ7H1E2Aubce0HVuX7cn",
 });
 
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-}
-
-
 export const POST = async (req: any) => {
   if (req.method === "POST") {
     const { prompt, history = [] } = await req.json()
