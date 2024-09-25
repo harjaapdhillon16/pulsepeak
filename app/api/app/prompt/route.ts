@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: process.env.OPEN_AI_KEY,
 });
 
 export const POST = async (req: any) => {
@@ -32,7 +32,10 @@ export const POST = async (req: any) => {
     // Add CORS headers to the response
     jsonResponse.headers.set("Access-Control-Allow-Origin", "*");
     jsonResponse.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    jsonResponse.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    jsonResponse.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
 
     return jsonResponse;
   } catch (error) {
@@ -47,7 +50,10 @@ export const POST = async (req: any) => {
     // Add CORS headers to the error response
     errorResponse.headers.set("Access-Control-Allow-Origin", "*");
     errorResponse.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    errorResponse.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    errorResponse.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
 
     return errorResponse;
   }
@@ -58,6 +64,9 @@ export const OPTIONS = async () => {
   const response = NextResponse.json({ message: "CORS preflight response" });
   response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
   return response;
 };

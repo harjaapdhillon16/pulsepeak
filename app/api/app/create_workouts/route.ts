@@ -1,14 +1,19 @@
 // @ts-nocheck
 import { NextResponse } from "next/server";
-import OpenAI from 'openai';
+import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: process.env.OPEN_AI_KEY,
 });
 
-
 export const POST = async (req) => {
-  const { fitnessGoals, workoutPreferences, medicalConditions, exerciseFrequency, fitnessLevel } = await req.json()
+  const {
+    fitnessGoals,
+    workoutPreferences,
+    medicalConditions,
+    exerciseFrequency,
+    fitnessLevel,
+  } = await req.json();
 
   function parseWorkoutString(inputString) {
     const workoutsArray = JSON.parse(inputString);
@@ -25,7 +30,9 @@ export const POST = async (req) => {
         },
         {
           role: "user",
-          content: `Create a ${exerciseFrequency}-day workout plan to help someone with ${medicalConditions} ${fitnessGoals}.Each day should have 5 workouts atleast, each day should focus on a max of 2 muscles, we don't need full body workouts , They prefer ${workoutPreferences.join(", ")}. Their fitness level is ${fitnessLevel} out of 10. Provide exercises, reps, sets, notes, and a YouTube link for each exercise in the following format:
+          content: `Create a ${exerciseFrequency}-day workout plan to help someone with ${medicalConditions} ${fitnessGoals}.Each day should have 5 workouts atleast, each day should focus on a max of 2 muscles, we don't need full body workouts , They prefer ${workoutPreferences.join(
+            ", "
+          )}. Their fitness level is ${fitnessLevel} out of 10. Provide exercises, reps, sets, notes, and a YouTube link for each exercise in the following format:
 {
   name: "Monday",
   workouts: [
