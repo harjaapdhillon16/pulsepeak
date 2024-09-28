@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import TelegramBot from "node-telegram-bot-api";
 import { DateTime } from "luxon";
+import { sendMessage } from "@/utils/sendMessage";
 
 const token = "7421455490:AAFp-ksnq7xcR8TqrJq1K8YzOJyCOrIakDo";
 
@@ -26,9 +27,9 @@ async function getMealsForToday() {
   const dateTime = new Date();
   const hours = `${dateTime.getUTCHours()}`;
   const minutes = `${dateTime.getMinutes()}`;
-  const currentTime = `${
-    hours.length === 1 ? `0${hours}` : `${hours}`
-  }:${minutes.length === 1 ? `0${minutes}` : `${minutes}`}:00`;
+  const currentTime = `${hours.length === 1 ? `0${hours}` : `${hours}`}:${
+    minutes.length === 1 ? `0${minutes}` : `${minutes}`
+  }:00`;
   const { data, error } = await supabase
     .from("diets")
     .select(
@@ -45,8 +46,9 @@ async function getMealsForToday() {
 
 async function sendWhatsAppReminder(phoneNumber, meal, name) {
   try {
-    const payload = {
-      phoneNumber: phoneNumber,
+    await sendMessage({
+      templateName: "diet",
+      phoneNumber,
       parameters: [
         { type: "text", text: name },
         {
@@ -54,19 +56,7 @@ async function sendWhatsAppReminder(phoneNumber, meal, name) {
           text: meal,
         },
       ],
-      templateName: "diet",
-    };
-
-    await axios.post(
-      "https://pulsepeak-1ed36d73343d.herokuapp.com/whatsapp-message",
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    });
   } catch (error) {
     console.error("Error sending WhatsApp reminder:", error);
   }

@@ -7,7 +7,7 @@
   "crons": [
     {
       "path": "/api/cron/workout-cron",
-      "schedule": "*/4 * * * *"
+      "schedule": "*/1 * * * *"
     },
     {
       "path": "/api/cron/diet-cron",
