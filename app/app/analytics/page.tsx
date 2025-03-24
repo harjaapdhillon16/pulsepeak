@@ -45,7 +45,7 @@ const FitnessAnalyticsDashboard = () => {
                 const { data: userData, error: userError } = await supabase
                     .from("users")
                     .select("*")
-                    .eq("email", 'baidwangursimran3@gmail.com')
+                    .eq("email", user?.email)
                     .single();
                 
                 if (userError) throw userError;
