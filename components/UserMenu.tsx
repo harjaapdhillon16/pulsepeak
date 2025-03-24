@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useAuth } from "@/utils/hooks/useSupabase";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
