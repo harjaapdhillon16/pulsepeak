@@ -27,7 +27,7 @@ export default function Index() {
         </div>
       </nav>
       {Boolean(email) ? (
-        <div className="pb-20 max-w-[1024px]">{<AuthUserUI />}</div>
+        <div className="pb-20">{<AuthUserUI />}</div>
       ) : (
         <div className="animate-in max-w-[1024px] flex-1 flex flex-col gap-20 opacity-0 px-3">
           <Hero />
